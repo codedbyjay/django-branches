@@ -4,6 +4,8 @@ from fabric.contrib.files import append
 import paramiko
 from paramiko.client import SSHClient
 
+from .system import *
+
 def test_credentials(hostname, username, password, port=22, timeout=15):
 	""" Returns True if the credentials work
 	"""
@@ -37,15 +39,15 @@ class connect(object):
     def __init__(self, server, username=None, password=None, port=22):
         print("Connecting to %s" % server)
         self.server = server
-        self.username = username
+        self.username = server.username or username
         self.password = password
-        self.port = port
+        self.port = server.port or port
 
     def __enter__(self):
         # connect to the Server
         env["hosts"] = [self.server.address]
+        env["user"] = self.username
         if self.username and self.password:
-            env["user"] = self.username
             env["password"] = self.password
         else:
             env["key_filename"] = get_key_filename()
