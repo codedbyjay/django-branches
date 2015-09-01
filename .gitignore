@@ -58,3 +58,4 @@ target/
 .vagrant
 .remote-sync.json
 *.sublime*
+static_root/
