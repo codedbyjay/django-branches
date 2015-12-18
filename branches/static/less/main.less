@@ -1,0 +1,115 @@
+@blue: #0050D4;
+@dark-blue: #013488;
+@light-grey: #F7F7F7;
+@medium-grey: #9A9A9A;
+@label-bg: #F7F7F7;
+@faded-text-color: #D0D0D0;
+
+@import url(http://fonts.googleapis.com/css?family=Oswald:700|Source+Sans+Pro)
+;
+body {
+  	margin-top: 70px;
+  	font-family: "Source Sans Pro", "Sans-Serif";
+  	background-color: @light-grey;
+}
+
+/** Navigation **/
+
+.navbar-inverse {
+    background-color: @blue;
+    border: none;
+}
+
+.navbar-inverse .navbar-brand {
+    color: white;
+}
+
+.offline {
+	border-bottom-color: 2px solid #E6E6E6;
+}
+
+/** Headings **/
+h1, h2, h3 {
+
+}
+
+.faded-text {
+	color: @faded-text-color;
+}
+
+/** Panels **/
+.panel {
+	border-radius: 0px;
+}
+
+.panel-default>.panel-heading {
+	background-color: white;
+	border-color: transparent;
+}
+
+.panel-default {
+	border-color: transparent;
+}
+
+.panel-title {
+	font-size: 13px;
+	a {
+		color: @medium-grey;
+		text-transform: uppercase;
+	}
+}
+
+.panel-body {
+	.project {
+		margin-top: -20px;
+		h3 {
+			display: inline-block;
+			margin-right: 3px;
+		}
+
+		a {
+			color: @medium-grey;
+		}
+
+		.project-branch-information {
+			color: @faded-text-color;
+			font-size: 12px;
+		}
+
+		.commit-list {
+			margin-top: 20px;
+
+			.commit {
+				margin-bottom: 15px;
+
+				.gravatar {
+					margin-right: 7px;
+				}
+
+				.author {
+					font-size: 11px;
+					color: @medium-grey;
+				}
+
+				.message {
+					font-size: 12px;
+				}
+
+
+			}
+		}
+	}
+	padding: 0px 15px 15px;
+}
+
+.fa-github {
+	color: @dark-blue;
+}
+
+.branch-name {
+	background-color: @label-bg;
+    color: #0f0f0f;
+    font-size: 12px;
+    border-radius: 7px;	
+}
+
