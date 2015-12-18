@@ -23,16 +23,12 @@ Vagrant.configure(2) do |config|
   # within the machine from a port on the host machine. In the example below,
   # accessing "localhost:8080" will access port 80 on the guest machine.
   config.vm.network "forwarded_port", guest: 8000, host: 8080
+  config.vm.network "forwarded_port", guest: 9000, host: 9000
+  config.vm.network "forwarded_port", guest: 25, host: 2525
 
   # Create a private network, which allows host-only access to the machine
   # using a specific IP.
-  # config.vm.network "private_network", ip: "192.168.33.1500"
-
-
-  config.vm.provider :virtualbox do |v|
-    v.customize ["modifyvm", :id, "--memory", 768]
-  end 
-
+  # config.vm.network "private_network", ip: "192.168.33.10"
 
   # Create a public network, which generally matched to bridged network.
   # Bridged networks make the machine appear as another physical device on
@@ -43,7 +39,7 @@ Vagrant.configure(2) do |config|
   # the path on the host to the actual folder. The second argument is
   # the path on the guest to mount the folder. And the optional third
   # argument is a set of non-required options.
-  # config.vm.synced_folder "../data", "/vagrant_data"
+  config.vm.synced_folder "../restfulgit", "/restfulgit"
   # config.vm.synced_folder ".", "/vagrant", type: "rsync",
   # rsync__exclude: [".git/", "bin", "lib", "build", "local", "src"]
 
@@ -58,6 +54,13 @@ Vagrant.configure(2) do |config|
   #   # Customize the amount of memory on the VM:
   #   vb.memory = "2048"
   # end
+  config.vm.provider "virtualbox" do |vb|
+    # Display the VirtualBox GUI when booting the machine
+    # vb.gui = true
+  
+    # Customize the amount of memory on the VM:
+    vb.memory = "1500"
+  end
   #
   # View the documentation for the provider you are using for more
   # information on available options.
@@ -75,40 +78,15 @@ Vagrant.configure(2) do |config|
   # config.vm.provision "shell", run: "always", inline: <<-SHELL
   #   # Install some prereqs
   #   sudo apt-get install -y make build-essential git emacs graphviz libgraphviz-dev pkg-config python-dev curl libjpeg-dev libfreetype6-dev zlib1g-dev
-  #   sudo apt-get install -y graphviz libgraphviz-dev pkg-config python-virtualenv make build-essential python-dev supervisor nginx redis-server libxml2-dev libxslt1-dev
+  #   sudo apt-get install -y graphviz libgraphviz-dev pkg-config python-virtualenv make build-essential python-dev redis-server libxml2-dev libxslt1-dev python-pip
 
   #   # Instll postgres
-  #   sudo add-apt-repository -y ppa:pitti/postgresql
-  #   sudo apt-get update --fix-missing
+  #   sudo sh -c 'echo "deb http://apt.postgresql.org/pub/repos/apt/ $(lsb_release -cs)-pgdg main" > /etc/apt/sources.list.d/pgdg.list'
+  #   sudo apt-get install wget ca-certificates
+  #   wget --quiet -O - https://www.postgresql.org/media/keys/ACCC4CF8.asc | sudo apt-key add -
+  #   sudo apt-get update
   #   sudo apt-get install -y --force-yes postgresql postgresql-server-dev-9.4 postgresql-9.4-postgis postgis postgresql-contrib
 
   #   # update the postgres user psw
   #   sudo -u postgres psql -U postgres -d postgres -c "alter user postgres with password 'password';"
-  #   sudo -u postgres psql -U postgres -d postgres -c "CREATE USER bamboo WITH password 'password';"
-  #   sudo -u postgres psql -U postgres -d postgres -c "ALTER USER bamboo WITH SUPERUSER;"
-
-  #   # Add bamboo to sudo
-  #   useradd -G sudo bamboo
-
-  #   # Install Rabbit
-  #   sudo apt-get -y install rabbitmq-server
-  #   rabbitmqctl add_user excess excess14
-  #   rabbitmqctl add_vhost /
-  #   rabbitmqctl set_permissions -p / excess ".*" ".*" ".*"
-  # SHELL
-
-  # config.vm.provision "shell", inline: <<-SHELL
-  #   # Configure the virtual environment
-  #   mkvirtualenv vagrant
-  #   pip install --upgrade pip
-  #   pip install -r /vagrant/requirements.txt
-  #   python manage.py syncdb
-  #   python manage.py migrate
-  # SHELL
-
-  # config.vm.provision "shell", inline: <<-SHELL
-  #   # Configure the virtual environment
-  #   /vagrant/bin/pip install -r /vagrant/requirements.txt
-  #   /vagrant/bin/python manage.py migrate --no-initial-data
-  # SHELL
 end
