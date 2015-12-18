@@ -1,0 +1,57 @@
+{% extends "home.html" %}
+
+{% block content %}
+{% for server in object_list %}
+<div class="panel panel-default">
+	  <div class="panel-heading">
+			<h3 class="panel-title">
+				<a href="{{ server.get_absolute_url }}">{{ server.name }}</a>				
+			</h3>
+	  </div>
+	  <div class="panel-body">
+		  	{% for project in server.projects.all %}
+				<div class="project" id="project-{{ project.pk }}">
+					<div class="project-header">
+					    <h3>
+						    <i class="fa fa-github"></i>&nbsp;
+						    {{ project.repository.name }}
+					    </h3>
+					    <a href="#">manage</a>
+					</div>
+					<div class="project-branch-information">
+						Currently on 
+						<span class="label label-default branch-name">
+							<i class="fa fa-code-fork"></i> master
+						</span>
+					</div>
+
+					<div class="commit-list">
+						<span class="faded-text" data-bind="visible: !statusLoaded">
+							<i class="fa fa-spinner fa-spin"></i>&nbsp;Loading commits...
+						</span>
+						<div data-bind="foreach: commits">
+							<div class="commit">
+								<img data-bind="attr: { src: gravatar_url}" alt="" class="gravatar img-circle">
+								<span class="message" data-bind="text: subject"></span>
+								<span class="author" data-bind="text: author_name"></span>	
+						</div>
+						</div>
+					</div>
+				</div>
+		   {% endfor %}
+	  </div>
+</div>
+
+<div class="xs-col-3">
+  
+  <br/>
+</div>
+{% empty %}
+No servers yet.
+{% endfor %}
+<a href="{% url 'branches:new-server' %}">Add a new server</a>
+{% endblock content %}
+
+{% block extra_scripts %}
+<script src="/static/js/server.js"></script>
+{% endblock extra_scripts %}
