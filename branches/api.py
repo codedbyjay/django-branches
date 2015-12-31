@@ -68,7 +68,10 @@ class ProjectResource(ModelResource):
         pk = kwargs.get("pk")
         project = get_object_or_404(Project, pk=pk)
         log = project.get_log(limit=limit)
-        return HttpResponse(log)
+        response = json.dumps(dict(log=log, 
+            is_changing_branch=project.is_changing_branch,
+            is_change_branch_requested=project.is_change_branch_requested))
+        return HttpResponse(response, content_type="application/json")
 
     def get_commits(self, request, **kwargs):
         limit = request.GET.get("limit", 50)
