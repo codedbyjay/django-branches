@@ -52,6 +52,17 @@ class ProjectResource(ModelResource):
         return JsonResponse(dict(message="Changing branch", result=True, 
             change_branch_request_pk=change_branch_request.pk))
 
+    def cancel_change_branch(self, request, **kwargs):
+        pk = kwargs.get("pk")
+        project = get_object_or_404(Project, pk=pk)
+        last_change_branch_request = project.last_change_branch_request
+        if last_change_branch_request.complete or last_change_branch_request.cancelled:
+            return JsonResponse(dict(result=False, message="No branch change in progress, nothing to change"))
+        result = project.cancel_change_branch()
+        if result:
+            return JsonResponse(dict(result=True, message="Successfully cancelled your branch change"))
+        return JsonResponse(dict(result=result, message="Something went wrong, we couldn't cancel... try again?"))
+
     def log(self, request, **kwargs):
         limit = request.GET.get("limit", 50)
         pk = kwargs.get("pk")
