@@ -23,8 +23,10 @@ class ProjectResource(ModelResource):
             url(r"^(?P<resource_name>%s)/(?P<pk>\d+)/current-branch/$" % self._meta.resource_name, self.wrap_view('get_current_branch'), name="current-branch"),
             url(r"^(?P<resource_name>%s)/(?P<pk>\d+)/branches/$" % self._meta.resource_name, self.wrap_view('get_branches'), name="branches"),
             url(r"^(?P<resource_name>%s)/(?P<pk>\d+)/change-branch/$" % self._meta.resource_name, self.wrap_view('change_branch'), name="change-branch"),
+            url(r"^(?P<resource_name>%s)/(?P<pk>\d+)/cancel-change-branch/$" % self._meta.resource_name, self.wrap_view('cancel_change_branch'), name="cancel-change-branch"),
             url(r"^(?P<resource_name>%s)/(?P<pk>\d+)/log/$" % self._meta.resource_name, self.wrap_view('log'), name="log"),
             url(r"^(?P<resource_name>%s)/(?P<pk>\d+)/status/$" % self._meta.resource_name, self.wrap_view('get_status'), name="get-status"),
+            url(r"^(?P<resource_name>%s)/(?P<pk>\d+)/change-branch-log/$" % self._meta.resource_name, self.wrap_view('log'), name="get-change-branch-log"),
         ]
 
     def get_current_branch(self, request, **kwargs):
