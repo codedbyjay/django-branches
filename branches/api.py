@@ -1,10 +1,11 @@
 import json
 
 from django.shortcuts import get_object_or_404
-from django.http import HttpResponse
+from django.http import HttpResponse, JsonResponse
 from django.conf.urls import patterns, include, url
 
 from tastypie.resources import ModelResource
+from tastypie import fields
 
 from branches.models import *
 
