@@ -43,9 +43,11 @@ class ProjectResource(ModelResource):
         pk = kwargs.get("pk")
         project = get_object_or_404(Project, pk=pk)
         new_branch = request.POST.get("branch")
-        project.request_branch_change(new_branch)
-        response = json.dumps(dict(message="Changing branch"))
-        return HttpResponse(response, content_type="application/json")
+        if not new_branch:
+            return JsonResponse(dict(result=False, message="Please supply a branch"))
+        change_branch_request = project.request_branch_change(new_branch)
+        return JsonResponse(dict(message="Changing branch", result=True, 
+            change_branch_request_pk=change_branch_request.pk))
 
     def log(self, request, **kwargs):
         limit = request.GET.get("limit", 50)
