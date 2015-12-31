@@ -64,7 +64,7 @@ class ProjectResource(ModelResource):
         return JsonResponse(dict(result=result, message="Something went wrong, we couldn't cancel... try again?"))
 
     def log(self, request, **kwargs):
-        limit = request.GET.get("limit", 50)
+        limit = request.GET.get("limit", 7)
         pk = kwargs.get("pk")
         project = get_object_or_404(Project, pk=pk)
         log = project.get_log(limit=limit)
