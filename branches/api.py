@@ -87,6 +87,14 @@ class ProjectResource(ModelResource):
         pk = kwargs.get("pk")
         project = get_object_or_404(Project, pk=pk)
         info = project.get_status(limit=limit)
+        last_change_branch_request = project.last_change_branch_request
+        if last_change_branch_request:
+            resource = ChangeBranchRequestResource()
+            resource_bundle = resource.build_bundle(obj=last_change_branch_request, request=request)
+            bundle_json = resource.serialize(None, resource.full_dehydrate(resource_bundle), 'application/json')
+            info["last_change_branch_request"] = json.loads(bundle_json)
+        else:
+            info["last_change_branch_request"] = {}
         response = json.dumps(dict(info=info))
         return HttpResponse(response, content_type="application/json")
 
