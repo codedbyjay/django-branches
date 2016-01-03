@@ -81,3 +81,28 @@ class InitializeServerForm(forms.ModelForm):
         if not test_credentials(address, username, password, port=port):
             raise forms.ValidationError("Ooops.. we didn't get into the server with those credentials")
         return cleaned_data
+
+class NewProjectForm(ModelForm):
+
+    class Meta:
+        model = Project
+        fields = ["repository", "location", "change_branch_script"]
+
+    def __init__(self, *args, **kwargs):
+        result = super(NewProjectForm, self).__init__(*args, **kwargs)
+        self.helper = FormHelper()
+        self.helper.layout = Layout(
+            Div(
+                Div(
+                    HTML("<span class='title'>New Project</span>"),
+                    HTML("<span class='instructions'>Enter the details for your project</span>"),
+                    css_class='form-header'),
+                'repository',
+                'location',
+                'change_branch_script',
+                FormActions(
+                    Submit('create', 'Add Project'),
+                ),
+            css_class='branches-form'),
+        )
+        return result
