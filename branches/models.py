@@ -20,7 +20,7 @@ from branches.networking import *
 from branches.git import Repo
 
 
-class Server(models.Model):
+class Server(TimeStampedModel):
 
     name = models.CharField(max_length=255)
     address = models.CharField(max_length=255)
@@ -44,7 +44,7 @@ class Server(models.Model):
         return reverse("branches:server-detail", kwargs=dict(pk=self.pk))
 
 
-class Repository(models.Model):
+class Repository(TimeStampedModel):
 
     name = models.CharField(max_length=255)
     url = models.CharField(max_length=255)
@@ -53,7 +53,7 @@ class Repository(models.Model):
         return self.name
 
 
-class Project(models.Model):
+class Project(TimeStampedModel):
     """ Links up a server to a project
     """
 
@@ -141,7 +141,8 @@ class Project(models.Model):
         return []
 
 
-class ChangeBranchLog(models.Model):
+class ChangeBranchRequest(TimeStampedModel):
+class ChangeBranchLog(TimeStampedModel):
 
     project = models.ForeignKey("Project", related_name="change_branch_logs")
     current_branch = models.CharField(max_length=255)
