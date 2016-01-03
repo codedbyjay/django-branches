@@ -119,3 +119,28 @@ class ChangeBranchForm(forms.Form):
         )
         return result
     
+
+
+class NewRepositoryForm(ModelForm):
+
+    class Meta:
+        model = Repository
+        fields = ["name", "url"]
+
+    def __init__(self, *args, **kwargs):
+        result = super(NewRepositoryForm, self).__init__(*args, **kwargs)
+        self.helper = FormHelper()
+        self.helper.layout = Layout(
+            Div(
+                Div(
+                    HTML("<span class='title'>New Repository</span>"),
+                    HTML("<span class='instructions'>Enter the details for your repository</span>"),
+                    css_class='form-header'),
+                'name',
+                'url',
+                FormActions(
+                    Submit('create', 'Add Repository'),
+                ),
+            css_class='branches-form'),
+        )
+        return result
