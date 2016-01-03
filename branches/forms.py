@@ -106,3 +106,16 @@ class NewProjectForm(ModelForm):
             css_class='branches-form'),
         )
         return result
+
+class ChangeBranchForm(forms.Form):
+
+    branch = forms.CharField(required=False)
+
+    def __init__(self, *args, **kwargs):
+        result = super(ChangeBranchForm, self).__init__(*args, **kwargs)
+        self.helper = FormHelper()
+        self.helper.layout = Layout(
+            'branch',
+        )
+        return result
+    
