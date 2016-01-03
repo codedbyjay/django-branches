@@ -12,8 +12,7 @@ from redis import Redis
 import django_rq
 from bash import bash
 
-from django.db import models
-from django.conf import settings
+from django_extensions.db.models import TimeStampedModel
 
 from branches import *
 from branches.tasks import *
