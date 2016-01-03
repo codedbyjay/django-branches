@@ -10,6 +10,7 @@ from fabric.api import env, run, execute, cd, local, sudo
 from fabric.contrib.files import append
 from redis import Redis
 import django_rq
+from bash import bash
 
 from django.db import models
 from django.conf import settings
