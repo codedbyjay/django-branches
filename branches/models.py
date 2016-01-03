@@ -34,11 +34,12 @@ class Server(TimeStampedModel):
     def __unicode__(self):
         return self.name
 
-    def initialize(self, username, password):
+    def initialize(self, username, password, port=None):
         """ Copy up the server's key to this server
         """
-        django_rq.enqueue(copy_key_to_server, self.pk,
-            username=username, password=password, port=self.port)
+        result = copy_key_to_server.delay(self.pk,
+            username=username, password=password, port=port or self.port)
+        return result
 
     def get_absolute_url(self):
         return reverse("branches:server-detail", kwargs=dict(pk=self.pk))
