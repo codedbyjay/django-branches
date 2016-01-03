@@ -29,7 +29,7 @@ class Server(TimeStampedModel):
     port = models.PositiveIntegerField(default=22)
     repositories = models.ManyToManyField("Repository", blank=True,  
         through="Project")
-    intialized = models.BooleanField(default=False)
+    initialized = models.BooleanField(default=False)
 
     def __unicode__(self):
         return self.name
