@@ -63,6 +63,12 @@ class Project(TimeStampedModel):
     location = models.CharField(max_length=255)
     change_branch_script = models.TextField(blank=True, null=True)
 
+    def get_log(self, limit=7):
+        try:
+            change_branch_log = self.change_branch_logs.latest("pk")
+            return change_branch_log.get_log(limit=limit)
+        except ChangeBranchLog.DoesNotExist:
+            return ""
     @property
     def repo(self):
         """ Return a repository object, only for use when connected to a server
