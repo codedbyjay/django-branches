@@ -19,22 +19,23 @@ class NewServerForm(ModelForm):
     def __init__(self, *args, **kwargs):
         result = super(NewServerForm, self).__init__(*args, **kwargs)
         instance = kwargs.get("instance", None)
-        if not instance:
-            # This means it's a new server
-            self.fields["username"] = forms.CharField()
-            self.fields["password"] = forms.CharField(widget=forms.PasswordInput)
         self.helper = FormHelper()
         self.helper.layout = Layout(
-            'name',
-            'address',
-            'description',
-            'username', 
-            'password',
-            'port',
-            FormActions(
-                Submit('save', 'Save'),
-                Button('cnacel', 'Cancel')
-            )
+            Div(
+                Div(
+                    HTML("<span class='title'>Create a server</span>"),
+                    HTML("<span class='instructions'>Enter the details about your server</span>"),
+                    css_class='form-header'),
+                'name',
+                'address',
+                'description',
+                'port',
+                FormActions(
+                    Button('cancel', 'Cancel', onclick="javascript:window.history.back()"),
+                    Submit('save', 'Save'),
+                    css_class="form-actions"
+                ),
+            css_class='branches-form'),
         )
         return result
 
