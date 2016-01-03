@@ -2,7 +2,11 @@ from django.core.urlresolvers import reverse
 
 from contextlib import contextmanager
 
-from fabric.api import env, run, execute, cd, local
+from django.db import models
+from django.conf import settings
+from django.db.models.signals import pre_save
+
+from fabric.api import env, run, execute, cd, local, sudo
 from fabric.contrib.files import append
 from redis import Redis
 import django_rq
