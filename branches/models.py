@@ -69,6 +69,15 @@ class Project(TimeStampedModel):
             return change_branch_log.get_log(limit=limit)
         except ChangeBranchLog.DoesNotExist:
             return ""
+
+    @property
+    def is_changing_branch(self):
+        return self.change_branch_logs.filter(active=True).exists()
+    
+    @property
+    def is_change_branch_requested(self):
+        return self.change_branch_requests.\
+            filter(status=ChangeBranchRequest.STATUS_REQUESTED).exists()
     @property
     def repo(self):
         """ Return a repository object, only for use when connected to a server
