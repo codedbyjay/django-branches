@@ -24,6 +24,7 @@ class ProjectResource(ModelResource):
             url(r"^(?P<resource_name>%s)/(?P<pk>\d+)/current-branch/$" % self._meta.resource_name, self.wrap_view('get_current_branch'), name="current-branch"),
             url(r"^(?P<resource_name>%s)/(?P<pk>\d+)/branches/$" % self._meta.resource_name, self.wrap_view('get_branches'), name="branches"),
             url(r"^(?P<resource_name>%s)/(?P<pk>\d+)/change-branch/$" % self._meta.resource_name, self.wrap_view('change_branch'), name="change-branch"),
+            url(r"^(?P<resource_name>%s)/(?P<pk>\d+)/update-branch-list/$" % self._meta.resource_name, self.wrap_view('update_branch_list'), name="update-branch-list"),
             url(r"^(?P<resource_name>%s)/(?P<pk>\d+)/cancel-change-branch/$" % self._meta.resource_name, self.wrap_view('cancel_change_branch'), name="cancel-change-branch"),
             url(r"^(?P<resource_name>%s)/(?P<pk>\d+)/log/$" % self._meta.resource_name, self.wrap_view('log'), name="log"),
             url(r"^(?P<resource_name>%s)/(?P<pk>\d+)/status/$" % self._meta.resource_name, self.wrap_view('get_status'), name="get-status"),
@@ -35,6 +36,13 @@ class ProjectResource(ModelResource):
         project = get_object_or_404(Project, pk=pk)
         response = json.dumps(dict(branch=project.current_branch))
         return HttpResponse(response, content_type="application/json")
+
+    def update_branch_list(self, request, **kwargs):
+        pk = kwargs.get("pk")
+        project = get_object_or_404(Project, pk=pk)
+        branches = project.update_branch_list()
+        return JsonResponse(dict(message="Updated branch list", result=True, 
+            branches=branches))
 
     def get_branches(self, request, **kwargs):
         pk = kwargs.get("pk")
