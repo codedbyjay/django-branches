@@ -1,0 +1,2 @@
+FROM celery:latest
+ENV CELERY_BROKER_URL redis://redis
