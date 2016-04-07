@@ -8,6 +8,11 @@ class Repo(object):
     def __init__(self, location):
         self.location = location
 
+    def fetch(self):
+        """ Fetches from remote
+        """
+        return run("git fetch")
+
     @property
     def active_branch(self):
         return run("git rev-parse --abbrev-ref HEAD")
@@ -53,7 +58,15 @@ class Repo(object):
     def available_branches(self):
         """ Returns a list of ALL branches (local and remote)
         """
-        return self.get_branch_list() + [self.active_branch]
+        branches = []
+        for branch in self.get_branch_list("-a"):
+            if branch.startswith("remotes"):
+                branch = branch.split("/")[2]
+            branches.append(branch)
+        # make it unique
+        branches = sorted(list(set(branches)))
+        return [self.active_branch] + branches
+
 
     def get_commits(self, limit=50, branch=None):
         """ Returns a list of commits
