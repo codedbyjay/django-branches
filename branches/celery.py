@@ -8,11 +8,10 @@ from celery.signals import celeryd_after_setup
 from celery.schedules import crontab
 from kombu import Exchange, Queue
 
+
 def get_new_task_id():
     return uuid()
 
-# Define some constants
-BROKER_URL = 'redis://localhost:6379/0'
 
 # set the default Django settings module for the 'celery' program.
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'django_branches.settings')
@@ -22,8 +21,8 @@ app.config_from_object('django.conf:settings')
 app.autodiscover_tasks(lambda: settings.INSTALLED_APPS)
 
 app.conf.update(
-	CELERY_TIMEZONE=settings.TIME_ZONE,
-	BROKER_URL=BROKER_URL,
-	CELERY_TASK_RESULT_EXPIRES=18000, # 5 hours
-    CELERY_RESULT_BACKEND = 'redis://localhost:6379/0'
+    CELERY_TIMEZONE=settings.TIME_ZONE,
+    BROKER_URL=settings.BROKER_URL,
+    CELERY_TASK_RESULT_EXPIRES=18000,
+    CELERY_RESULT_BACKEND='redis://redis'
 )
