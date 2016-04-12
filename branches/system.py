@@ -1,6 +1,9 @@
 import os
 
+from django.conf import settings
+
 from bash import bash
+
 
 def get_ssh_key():
     key_location = settings.SSH_KEY_LOCATION
