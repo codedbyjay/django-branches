@@ -1,0 +1,11 @@
+{% extends "branches/base_site.html" %}
+{% block content %}
+<form method="post">
+    {% csrf_token %}
+    <div class="confirmation-message">
+        {% block message %}{% endblock message %}
+    </div>
+    <button type="submit" name="submit" class="btn btn-default">Delete</button>
+    <button type="button" class="btn btn-default" onclick="javascript:window.history.back();">Cancel</button>
+</form>
+{% endblock content %}
