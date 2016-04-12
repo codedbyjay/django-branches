@@ -1,0 +1,8 @@
+Welcome to DevBranch!
+
+You're just about ready to get started. Just click the link below to activate your account and let's start managing your servers.
+
+{% url "registration_activate" activation_key=activation_key %}
+
+Plese note that this link expires in {{ expiration_days }} days.
+
