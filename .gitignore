@@ -62,3 +62,4 @@ static_root/
 design/
 id_rsa*
 local_settings*.py
+db.sqlite*
