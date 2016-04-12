@@ -1,0 +1,22 @@
+{% extends "branches/dashboard.html" %}
+
+{% block page_title %}Initializing your server{% endblock page_title %}
+
+{% block content %}
+    <div class="branches-form">
+        <div class="form-header">
+            <span class="title">Initializing</span>
+            <span class="instructions">Just a sec... we're intializing your server</span>
+        </div>
+        <div class="content">
+            <i class="fa fa-spin fa-spinner"></i>&nbsp;&nbsp;Almost there...
+        </div>
+    </div>
+{% endblock content %}
+
+
+{% block extra_scripts %}
+<script type="text/javascript">
+    branches.utils.reloadIn(5); // reload the page in 5s
+</script>
+{% endblock extra_scripts %}

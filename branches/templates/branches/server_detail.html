@@ -1,15 +1,38 @@
-{% extends "home.html" %}
+{% extends "branches/dashboard.html" %}
+{% load project_tags %}
+
+{% block page_title %}
+    <a href="{% url 'branches:server-list' %}" class="back-link">
+        <i class="fa fa-chevron-left"></i>
+    </a>
+    <i class="fa fa-desktop"></i>&nbsp;&nbsp;{{ server.name }}
+{% endblock page_title %}
 
 {% block content %}
+    <div class="page-actions">
+        <a href="{% url 'branches:server-edit' pk=server.pk %}" class="pull-right"><button class="btn btn-normal">Edit</button></a>
+        <a href="{% url 'branches:server-delete' pk=server.pk %}" class="pull-right"><button class="btn btn-normal">Delete</button></a>
+    </div>
 
-<div class="col-xs6">
-	<div class="panel panel-info">
-			  <div class="panel-heading offline">
-					<h3 class="panel-title">{{ server.name }}</h3>
-			  </div>
-			  <div class="panel-body">
-					Panel content
-			  </div>
-		</div>	
-</div>
+{% for project in server.projects.all %}
+    {% if forloop.first %}
+        <div class="row">
+    {% endif %}
+
+    <div class="col-sm-4 col-md-4 col-lg-4">
+        {% render_project project full=False %}
+    </div>
+
+    {% if forloop.counter|divisibleby:3 %}
+        </div>
+        <div class="row">
+    {% endif %}
+
+    {% if forloop.last %}
+        </div>
+    {% endif %}
+{% empty %}
+No projects just yet.
+{% endfor %}
+
 {% endblock content %}

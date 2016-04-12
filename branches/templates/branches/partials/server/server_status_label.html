@@ -1,0 +1,7 @@
+<!-- server status -->
+{% if not server.initialized %}
+    <span class="label label-default pull-right">Offline</span>
+{% endif %}
+{% if server.initialized %}
+    <span class="label label-success pull-right">Online</span>
+{% endif %}

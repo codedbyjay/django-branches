@@ -1,0 +1,81 @@
+{% load crispy_forms_tags %}
+
+<div class="panel panel-default">
+      <div class="panel-heading">
+
+            <h2 class="panel-title">
+                <i class="fa fa-github"></i>
+                &nbsp;
+                <a href="{% if full %}#{% else %}{% url 'branches:project-detail' pk=project.pk %}{% endif %}">{{ project.repository.name }}</a>
+            </h2>
+            <span class="server-address"><i class="fa fa-desktop"></i>&nbsp;&nbsp;Hosted on <a href="{% url 'branches:server-detail' pk=project.server.pk %}">{{ project.server.name }}</a></span>
+      </div>
+      <div class="panel-body">
+            <div class="project {% if full %}full{% endif %}" id="project-{{ project.pk }}">
+
+                <div class="branch-change-div">
+                    {% if full %}
+                        {% crispy change_branch_form %}
+
+                        <div class="branch-select-actions" data-bind="visible: !changingBranches() && dataLoaded()">
+                            <!-- ko if: updatingBranches() -->
+                                Refreshing...
+                            <!-- /ko -->
+                            <!-- ko if: !updatingBranches() -->
+                                <a href="javscript:void(0)" data-bind="click: updateBranchList">Refresh</a>
+                            <!-- /ko -->
+                        </div>
+
+                        <div class="branch-actions" data-bind="visible: changingBranches() || canChangeBranch() || changeBranchLog()">
+                            <!-- ko if: canChangeBranch() -->
+                                <span class="explanation">
+                                    Change branch from <span class="branch-name"><i class="fa fa-code-fork"></i>&nbsp;<span data-bind="html: currentBranch"></span></span> to
+                                    <span class="branch-name"><i class="fa fa-code-fork"></i>&nbsp;<span data-bind="html: selectedBranch"></span></span>?
+                                </span>
+                                <button type="button" class="btn btn-small btn-danger" data-bind="click: changeBranch">Change</button>
+                                <button type="button" class="btn btn-small btn-default" data-bind="click: resetSelectedBranch">Cancel</button>
+                            <!-- /ko -->
+                            <!-- ko if: changingBranches() -->
+                                <span class="explanation">
+                                    <i class="fa fa-spin fa-spinner"></i>
+                                    &nbsp;&nbsp;Changing branch to 
+                                    <span class="branch-name"><i class="fa fa-code-fork"></i>&nbsp;<span data-bind="html: selectedBranch"></span></span>
+                                </span>
+                                <button type="button" class="btn btn-small btn-danger" data-bind="click: cancelChangeBranch">Cancel</button>
+                            <!-- /ko -->
+        
+                            <!-- ko if: changeBranchLog -->                        
+                                <div class="branch-change-log" data-bind="html: changeBranchLog()"></div>
+                                <a data-bind="attr: { href: '/branches/api/v1/change-branch-request/' + changeBranchRequest() + '/log/'}" target="_blank">View Log</a>
+                            <!-- /ko -->
+                        </div>
+                    {% else %}
+                    <div class="current-branch" data-bind="visible: dataLoaded()">
+                        On branch <span class="branch-name"><i class="fa fa-code-fork"></i>&nbsp;<span data-bind="html: currentBranch"></span>
+                    </div>
+                    {% endif %}
+
+                    <span class="faded-text" data-bind="visible: !dataLoaded()">
+                        <i class="fa fa-spinner fa-spin"></i>&nbsp;Loading branch...
+                    </span>
+                </div>
+
+
+                {% if full %}
+                    <div class="commit-list">
+                        <span class="faded-text" data-bind="visible: !dataLoaded()">
+                            <i class="fa fa-spinner fa-spin"></i>&nbsp;Loading commits...
+                        </span>
+                        <div data-bind="foreach: commits">
+                            <div class="commit">
+                                <img data-bind="attr: { src: gravatar_url}" alt="" class="gravatar img-circle">
+                                <span class="message" data-bind="text: subject"></span>
+                                <span class="author" data-bind="text: author_name"></span>  
+                        </div>
+                        </div>
+                    </div>
+                {% endif %}
+
+            </div>
+      </div>
+</div>

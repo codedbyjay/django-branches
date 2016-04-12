@@ -1,11 +1,5 @@
 {% extends "branches/dashboard.html" %}
-
-{% load crispy_forms_tags %}
-
+{% load server_tags %}
 {% block content %}
-
-<form method="POST">
-  {% crispy form %}
-</form>
-
+    {% render_server server %}
 {% endblock content %}

@@ -1,0 +1,60 @@
+<div class="panel panel-default">
+      <div class="panel-heading">
+            {% include "branches/partials/server/server_status_label.html" %}
+            <h2 class="panel-title">
+                <i class="fa fa-desktop"></i>
+                &nbsp;&nbsp;
+                <a href="{{ server.get_absolute_url }}">{{ server.name }}</a>
+                <span class="server-address">at {{ server.address }}</span>
+            </h2>
+
+            {% if show_actions %}
+                <div class="actions">
+                    <a class="btn btn-small btn-default" href="{% url 'branches:server-edit' pk=server.pk %}">Edit</a>
+                    <a class="btn btn-small btn-danger" href="{% url 'branches:server-delete' pk=server.pk %}">Delete</a>
+                </div>
+            {% endif %}
+
+      </div>
+      <div class="panel-body">
+            {% if server.initialized %}
+                {% for project in server.projects.all %}
+                    <div class="project" id="project-{{ project.pk }}">
+                        <div class="project-header">
+                            <h3>
+                                <i class="fa fa-github"></i>&nbsp;
+                                <a href="{% url 'branches:project-detail' pk=project.pk %}">{{ project.repository.name }}</a>
+                            </h3>
+                            <span class="project-branch-information">Currently on 
+                                <span class="branch-name">
+                                    <i class="fa fa-code-fork"></i> master
+                                </span>
+                            </span>
+                        </div>
+
+
+
+                        {% if show_commits %}
+                            <div class="commit-list">
+                                <span class="faded-text" data-bind="visible: !statusLoaded">
+                                    <i class="fa fa-spinner fa-spin"></i>&nbsp;Loading commits...
+                                </span>
+                                <div data-bind="foreach: commits">
+                                    <div class="commit">
+                                        <img data-bind="attr: { src: gravatar_url}" alt="" class="gravatar img-circle">
+                                        <span class="message" data-bind="text: subject"></span>
+                                        <span class="author" data-bind="text: author_name"></span>  
+                                </div>
+                                </div>
+                            </div>
+                        {% endif %}
+
+                    </div>
+                {% empty %}
+                No projects added yet. <a href="{% url 'branches:new-project' pk=server.pk %}">Add a project</a>.
+               {% endfor %}
+            {% else %}
+                We haven't established a connection to this server yet. <a href="{% url 'branches:initialize-server' pk=server.pk %}">Initialize</a>.
+            {% endif %}
+      </div>
+</div>
