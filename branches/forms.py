@@ -2,12 +2,48 @@ from django import forms
 from django.forms import ModelForm
 
 from crispy_forms.helper import FormHelper
-from crispy_forms.layout import Layout, Submit, Button, HTML, Div
+from crispy_forms.layout import Layout, Submit, Button, HTML, Div, Field
 from crispy_forms.bootstrap import FormActions
 
 from fabric.api import env, run, execute, cd
 
+from registration.forms import RegistrationForm as CoreRegistrationForm
+
 from branches.models import *
+
+
+class LoginForm(forms.Form):
+
+    email = forms.EmailField()
+    password = forms.CharField(widget=forms.PasswordInput)
+
+    def __init__(self, *args, **kwargs):
+        super(LoginForm, self).__init__(*args, **kwargs)
+        self.helper = FormHelper()
+        self.helper.layout = Layout(
+            'email',
+            'password',
+            FormActions(
+                Submit('login', 'Login'),
+            ),
+        )
+
+
+class RegistrationForm(CoreRegistrationForm):
+
+    def __init__(self, *args, **kwargs):
+        super(RegistrationForm, self).__init__(*args, **kwargs)
+        self.helper = FormHelper()
+        self.helper.layout = Layout(
+            'username',
+            'email',
+            'password',
+            'password2',
+            FormActions(
+                Submit('signup', 'Create Account'),
+            ),
+        )
+
 
 class NewServerForm(ModelForm):
 
