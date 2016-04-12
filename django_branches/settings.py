@@ -44,7 +44,7 @@ INSTALLED_APPS = (
     'django_extensions',
     'tastypie',
     'crispy_forms',
-    'django_rq',
+    'debug_toolbar',
 
 
     'branches',
@@ -124,3 +124,26 @@ CACHES = {
         },
     },
 }
+
+DEBUG_TOOLBAR_PATCH_SETTINGS = False
+
+# Celery settings
+BROKER_URL = 'redis://localhost:6379/0'
+CELERY_RESULT_BACKEND = 'redis://localhost:6379/0'
+
+INTERNAL_IPS = ["192.168.0.2"]
+
+TASTYPIE_DEFAULT_FORMATS = ['json']
+
+SSH_KEY_LOCATION = os.path.expanduser("~/.ssh")
+
+ACCOUNT_ACTIVATION_DAYS = 14
+
+EMAIL_BACKEND = 'django_mailgun.MailgunBackend'
+DEFAULT_FROM_EMAIL = 'admin@devbranch.io'
+SERVER_EMAIL = 'admin@devbranch.io'
+
+try:
+    from branches.local_settings import *
+except ImportError:
+    pass
