@@ -1,22 +1,122 @@
-@blue: #0050D4;
+// browns
+@brown: #3F2227;
+@red-brown: #632300;
+@even-darker-brown: #1f0a00;      
+
+
+// oranges
+@pale-orange: #FFFAF4;
+@lighter-orange: #dc8076;
+@light-orange: #d66d62;
+@orange: #CC4739;
+@dark-orange: #a94442;
 @dark-blue: #013488;
-@light-grey: #F7F7F7;
+
+// Greys
+@lighter-grey: #F7F7F7;
+@light-grey: #D0D0D0;
+@grey: #B7B7B7;
+@darker-grey: #919191;
+@even-darker-grey: #696969;
+
+// Greens
+@green: #39cc47;
+@med-green: #299E35;
+@dark-green: #1F7A28;
+
 @medium-grey: #9A9A9A;
 @label-bg: #F7F7F7;
 @faded-text-color: #D0D0D0;
 
-@import url(http://fonts.googleapis.com/css?family=Oswald:700|Source+Sans+Pro)
-;
+@font-face {
+    font-family: 'aleoregular';
+    src: url('../fonts/Aleo-Regular-webfont.eot');
+    src: url('../fonts/Aleo-Regular-webfont.eot?#iefix') format('embedded-opentype'),
+         url('../fonts/Aleo-Regular-webfont.woff') format('woff'),
+         url('../fonts/Aleo-Regular-webfont.ttf') format('truetype'),
+         url('../fonts/Aleo-Regular-webfont.svg#aleoregular') format('svg');
+    font-weight: normal;
+    font-style: normal;
+}
+
+
+@import url(http://fonts.googleapis.com/css?family=Oswald:700|Source+Sans+Pro);
 body {
-  	margin-top: 70px;
-  	font-family: "Source Sans Pro", "Sans-Serif";
-  	background-color: @light-grey;
+    margin-top: 70px;
+    font-family: "Source Sans Pro", "Sans-Serif";
+    background-color: @lighter-grey;
+}
+
+.main-menu {
+    padding: 20px 0px;
+}
+
+.site-promotion {
+    background-image: url("/static/img/laptop.png");
+    height: 610px;
+
+    .manage {
+        margin-top: 180px;
+        font-size: 41px;
+        color: @red-brown;
+    }
+
+    .commands {
+        font-size: 24px;
+        color: @even-darker-brown;
+    }
+
+}
+
+.feature {
+    width: 770px;
+    .feature-description {
+        margin: 0px 40px;
+    }
+
+    .caption {
+        font-family: aleoregular;
+        font-size: 32px;
+        display: block;
+    }
+
+    .sub-caption {
+
+    }
+}
+
+.site-title {
+    font-weight: bold;
+    font-size: 26px;
+    padding: 20px 0px;
+    float: left;
+
+    .dev {
+        color: @brown;
+    }
+
+    .branch {
+        color: @dark-green;
+    }
+}
+
+/** Headings */
+h1, h2, h3 {
+    color: @brown;
+}
+
+h2 {
+    font-size: 30px;
+}
+
+h3 {
+    font-size: 16px;
 }
 
 /** Navigation **/
 
 .navbar-inverse {
-    background-color: @blue;
+    background-color: white;
     border: none;
 }
 
@@ -25,7 +125,7 @@ body {
 }
 
 .offline {
-	border-bottom-color: 2px solid #E6E6E6;
+    border-bottom-color: 2px solid #E6E6E6;
 }
 
 /** Headings **/
@@ -34,82 +134,343 @@ h1, h2, h3 {
 }
 
 .faded-text {
-	color: @faded-text-color;
+    color: @faded-text-color;
 }
 
 /** Panels **/
 .panel {
-	border-radius: 0px;
+    border-radius: 0px;
+    border: none;
 }
 
 .panel-default>.panel-heading {
-	background-color: white;
-	border-color: transparent;
+    background-color: @light-grey;
+    border-color: transparent;
 }
 
 .panel-default {
-	border-color: transparent;
+    border-color: transparent;
+}
+
+.panel-heading {
+    .actions {
+        float: right;
+        margin-top: 20px
+    }
+
+    .server-address {
+        color: @darker-grey;
+        font-size: 12px;        
+        font-weight: bold;
+        display: block;
+        margin-top: 10px;
+    }
+
 }
 
 .panel-title {
-	font-size: 13px;
-	a {
-		color: @medium-grey;
-		text-transform: uppercase;
-	}
+    color: @brown;
+    a {
+        color: @brown;
+        text-transform: uppercase;
+        font-size: 24px;
+        text-decoration: none;
+    }
+
+    .fa {
+        font-size: 27px;
+    }
+
 }
 
 .panel-body {
-	.project {
-		margin-top: -20px;
-		h3 {
-			display: inline-block;
-			margin-right: 3px;
-		}
 
-		a {
-			color: @medium-grey;
-		}
+    border-top: 1px solid @lighter-grey;
 
-		.project-branch-information {
-			color: @faded-text-color;
-			font-size: 12px;
-		}
+    .project {
+        h3 {
+            display: inline-block;
+            margin-right: 3px;
+            color: @dark-orange;
+            text-transform: lowercase;
+            a {
+                color: @dark-orange;
+                text-decoration: none;
+            }
+        }
 
-		.commit-list {
-			margin-top: 20px;
+        a {
+            color: @medium-grey;
+        }
 
-			.commit {
-				margin-bottom: 15px;
+        .project-branch-information {
+            color: @faded-text-color;
+            font-size: 12px;
+        }
 
-				.gravatar {
-					margin-right: 7px;
-				}
+        .current-branch {
+            margin: 10px 0px;
+        }
 
-				.author {
-					font-size: 11px;
-					color: @medium-grey;
-				}
+        .commit-list {
+            margin-top: 20px;
 
-				.message {
-					font-size: 12px;
-				}
+            .commit {
+                margin-bottom: 15px;
+
+                .gravatar {
+                    margin-right: 7px;
+                }
+
+                .author {
+                    font-size: 11px;
+                    color: @medium-grey;
+                }
+
+                .message {
+                    font-size: 12px;
+                }
 
 
-			}
-		}
-	}
-	padding: 0px 15px 15px;
+            }
+        }
+    }
+    padding: 0px 15px 15px;
 }
 
-.fa-github {
-	color: @dark-blue;
+/**
+ * Labels
+ */
+.label {
+    padding: 6px;
+    font-weight: bold;
+    text-transform: uppercase;
+    font-size: 11px;
 }
+
+
+/**
+ * Buttons
+ */
+.btn {
+    padding: 10px 20px;
+    border-radius: 3px;
+    text-transform: uppercase;
+    font-weight: bold;
+    font-size: 12px;
+    background-color: @light-grey;
+    color: white;
+    border: none;
+}
+
+.btn.btn-danger {
+    background-color: @orange;
+}
+
+.btn.btn-danger:hover {
+    background-color: @dark-orange;
+}
+
+.btn-small {
+    padding: 6px 12px;
+}
+
+.btn:hover {
+    color: white;
+    background-color: @grey;
+}
+
+.btn-primary {
+    background-color: @lighter-orange;
+    border: none;
+}
+
+.btn-primary:active, .btn-primary.active {
+    background-color: @light-orange;
+    border: none;
+}
+
+.btn-primary:hover, .btn-primary.hover {
+    background-color: @orange;
+    border: none;
+}
+
+.btn-success {
+    background-color: @med-green;
+}
+
+
+/** Main page elements */
+.promotion {
+    margin: -20px 0px 20px;
+    background-color: @dark-orange;
+    color: white;
+    height: 250px;
+}
+
 
 .branch-name {
-	background-color: @label-bg;
     color: #0f0f0f;
-    font-size: 12px;
-    border-radius: 7px;	
+    font-size: 15px;
+    border-radius: 7px;
+    font-weight: bold;
+    margin: 0px 5px;
 }
 
+/**
+ * New server form
+ */
+.branches-form {
+    padding: 20px;
+    background-color: white;
+    .form-header {
+        margin: -20px -20px 20px;
+        padding: 30px 20px 10px;
+        background-color: @orange;
+
+        span.title {
+            color: #D1A49F;
+            font-size: 12px;
+            font-weight: bold;
+            text-transform: uppercase;          
+        }
+
+        span.instructions {
+            display: block;
+            color: white;
+            font-size: 18px;            
+        }
+    }
+
+    label {
+        font-weight: 700;
+        text-transform: uppercase;
+        font-size: 12px;        
+    }
+
+    .form-actions {
+        text-align: right;
+    }
+}
+
+
+.page-actions {
+    height: 50px;
+    a {
+        margin-left: 10px;
+    }
+}
+
+.page-heading {
+    margin-top: -20px;
+    padding-top: 30px;
+    padding-bottom: 10px;
+
+    .back-link {
+        margin-right: 15px;
+        color: @brown;
+        text-decoration: none;
+    }
+
+    .back-link:hover {
+        color: @brown;        
+    }
+}
+
+.selectize-input {
+
+}
+
+// Selectize
+
+.selectize-control.textinput.textInput.form-control.single {
+    width: 550px;
+    margin-left: 20px;
+}
+
+.selectize-dropdown, .selectize-input, .selectize-input input {
+    line-height: 15px;
+}
+
+.selectize-input.full {
+    background-color: @lighter-grey;
+}
+
+.selectize-control.single .selectize-input:focus, .selectize-control.single .selectize-input:focus {
+    outline: none;
+}
+
+.selectize-dropdown [data-selectable], .selectize-dropdown .optgroup-header {
+    padding: 6px 12px;
+    line-height: normal;
+    height: 35px;
+    color: @even-darker-grey;
+}
+
+.selectize-dropdown-content {
+    padding: 0px;
+}
+
+.selectize-dropdown.single.textinput.textInput.form-control {
+    margin-top: 5px;
+}
+
+/**
+ * Branch styling
+ */
+#id_branch {
+    display: none;
+}
+
+#div_id_branch > * {
+    vertical-align: middle;
+    display: inline-block;
+}
+
+#div_id_branch {
+    margin-top: 20px;
+    label {
+        color: @darker-grey;
+        margin-bottom: 10px;
+    }
+}
+
+.branch-actions {
+    margin: 0px -15px;
+    padding: 10px 15px;
+    border-left: 3px solid @light-orange;
+    background-color: @pale-orange;
+}
+
+span.branch-item {
+    margin-top: 3px;
+}
+
+
+/**
+ * Project styling
+ */
+textarea#id_change_branch_script  {
+    color: #45CE37;
+    background-color: black;
+    letter-spacing: 1px;
+}
+
+.branch-change-log  {
+    color: #45CE37;
+    background-color: black;
+    letter-spacing: 1px;
+    padding: 15px;
+    margin-top: 10px;
+}
+
+.branch-change-div {
+    form {
+        display: inline-block;
+    }
+
+    .branch-select-actions {
+        display: inline-block;
+        margin-left: 10px;
+    }
+}
