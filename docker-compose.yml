@@ -11,12 +11,17 @@ services:
             -  "8000:8000"
         links:
             - db
+            - celery
             - redis
-    redis:
-        image: redis
     celery:
-        build:
-            context: .
-            dockerfile: Dockerfile-celery
+        build: .
         links:
             - redis
+            - db
+        depends_on:
+            - redis
+        volumes:
+            - .:/code
+        command: su -m myuser -c "celery worker -A branches -l info"
+    redis:
+        image: redis:latest
