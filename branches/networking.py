@@ -6,6 +6,7 @@ from paramiko.client import SSHClient
 
 from .system import *
 
+
 def test_credentials(hostname, username, password, port=22, timeout=15):
     """ Returns True if the credentials work
     """
