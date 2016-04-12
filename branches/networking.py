@@ -7,17 +7,19 @@ from paramiko.client import SSHClient
 from .system import *
 
 def test_credentials(hostname, username, password, port=22, timeout=15):
-	""" Returns True if the credentials work
-	"""
-	client = SSHClient()
-	client.set_missing_host_key_policy(paramiko.AutoAddPolicy())
-	try:
-		client.connect(hostname, username=username, password=password,
-			port=port, timeout=10)
-		return True
-	except Exception as e:
-		print(e)
-		return False
+    """ Returns True if the credentials work
+    """
+    client = SSHClient()
+    client.set_missing_host_key_policy(paramiko.AutoAddPolicy())
+    try:
+        client.connect(
+            hostname, username=username, password=password,
+            port=port, timeout=10)
+        return True
+    except Exception as e:
+        print(e)
+        return False
+
 
 def test_keyfile(hostname, username, key_filename, port=22, timeout=15):
     """ Tests if a key file works
@@ -25,12 +27,14 @@ def test_keyfile(hostname, username, key_filename, port=22, timeout=15):
     client = SSHClient()
     client.set_missing_host_key_policy(paramiko.AutoAddPolicy())
     try:
-        client.connect(hostname, port=port, username=username,
+        client.connect(
+            hostname, port=port, username=username,
             key_filename=key_filename, timeout=10)
         return True
     except Exception as e:
         print(e)
         return False
+
 
 class connect(object):
     """ Context manager to allow us to connect to servers
