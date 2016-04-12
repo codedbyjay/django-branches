@@ -1,0 +1,50 @@
+{% extends "branches/base_site.html" %}
+
+{% block jumbotron %}
+  <div class="jumbotron page-heading site-promotion">
+    <div class="container">
+      <div class="row">
+        <div class="col-xs-8 col-sm-8 col-md-8 col-lg-8 col-lg-offset-3 manage">
+          Manage your server <u>branches</u> remotely
+        </div>
+        <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6 col-lg-offset-4 commands">
+          $ git fetch<br>
+          $ git pull<br>
+          $ git branch another_branch<br>
+          <br>
+          $ sh run_some_script.sh<br>
+        </div>
+      </div>
+
+    </div>      
+  </div>
+{% endblock jumbotron %}
+
+
+{% block content %}
+<div class="features">
+  <div class="row">
+    <div class="feature pull-left">
+      <img src="/static/img/codefork.png" class="pull-left">
+      <div class="feature-description pull-left">
+        <span class="caption">Perform git operations with a breeze</span>
+        <span class="sub-caption">
+          git pull, git branch, git log
+        </span>
+      </div>
+    </div>
+  </div>
+  <div class="row">
+    <div class="feature pull-right">
+      <img src="/static/img/console.png" alt="" class="pull-right">
+      <div class="feature-description pull-right">
+        <span class="caption">Run custom commands on your server</span>
+        <span class="sub-caption">
+          Run anything your server supports
+        </span>
+      </div>      
+    </div>
+  </div>
+</div>
+{% endblock content %}
+
