@@ -22,12 +22,16 @@ from branches.celery import get_new_task_id
 
 class Server(TimeStampedModel):
 
+    user = models.ForeignKey(
+        settings.AUTH_USER_MODEL, blank=True, null=True,
+        related_name="servers")
     name = models.CharField(max_length=255)
     address = models.CharField(max_length=255)
     description = models.TextField(blank=True, null=True)
     username = models.CharField(max_length=255, blank=True, null=True)
     port = models.PositiveIntegerField(default=22)
-    repositories = models.ManyToManyField("Repository", blank=True,  
+    repositories = models.ManyToManyField(
+        "Repository", blank=True,
         through="Project")
     initialized = models.BooleanField(default=False)
 
@@ -37,7 +41,8 @@ class Server(TimeStampedModel):
     def initialize(self, username, password, port=None):
         """ Copy up the server's key to this server
         """
-        result = copy_key_to_server.delay(self.pk,
+        result = copy_key_to_server.delay(
+            self.pk,
             username=username, password=password, port=port or self.port)
         return result
 
@@ -59,7 +64,7 @@ class Project(TimeStampedModel):
     """
 
     server = models.ForeignKey("Server", related_name="projects")
-    repository =  models.ForeignKey("Repository", related_name="projects")
+    repository = models.ForeignKey("Repository", related_name="projects")
     location = models.CharField(max_length=255)
     change_branch_script = models.TextField(blank=True, null=True)
 
@@ -73,7 +78,7 @@ class Project(TimeStampedModel):
     @property
     def is_changing_branch(self):
         return self.change_branch_logs.filter(active=True).exists()
-    
+
     @property
     def is_change_branch_requested(self):
         return self.change_branch_requests.\
@@ -85,7 +90,6 @@ class Project(TimeStampedModel):
             change_branch_log = self.change_branch_logs.filter(active=True)[0]
             return change_branch_log.cancel()
         return False
-
 
     def cancel_change_branch(self):
         if self.last_change_branch_request:
