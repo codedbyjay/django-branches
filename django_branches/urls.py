@@ -15,6 +15,7 @@ urlpatterns = patterns(
     url(r'^accounts/register/$', RegistrationView.as_view(), name='register'),
     url(r'^accounts/', include('registration.backends.hmac.urls')),
     url(r'^admin/', include(admin.site.urls)),
+    url(r'^docs/', include('docs.urls')),
 
     # Both urls needed for branches to work
     url(r'^branches/', include('branches.urls', namespace="branches")),
