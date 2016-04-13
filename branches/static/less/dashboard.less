@@ -1,37 +1,80 @@
-// browns
-@brown: #3E211E;
-
-// oranges
-@pale-orange: #FFFAF4;
-@lighter-orange: #dc8076;
-@light-orange: #d66d62;
-@orange: #CC4739;
-@dark-orange: #a94442;
-@dark-blue: #013488;
-
-// Greys
-@lighter-grey: #F7F7F7;
-@light-grey: #D0D0D0;
-@grey: #B7B7B7;
-@darker-grey: #919191;
-@even-darker-grey: #696969;
-
-// Greens
-@green: #39cc47;
-@med-green: #299E35;
-@dark-green: #1F7A28;
-
-@medium-grey: #9A9A9A;
-@label-bg: #F7F7F7;
-@faded-text-color: #D0D0D0;
-
-@import url(http://fonts.googleapis.com/css?family=Oswald:700|Source+Sans+Pro)
-;
+@import "colors.less";
+@import "fonts.less";
 body {
     margin-top: 70px;
-    font-family: "Source Sans Pro", "Sans-Serif";
-    background-color: @lighter-grey;
+    background-color: @dashboard-bg;
 }
+
+/** Dashboard */
+.main-menu {
+    background-color: white;
+    height: 70px;
+    padding: 0px;
+    position: fixed;
+    top: 0px;
+    width: 100%;
+}
+
+.brand {
+    background-color: @dark-green;
+    color: white;
+    height: 100%;
+    font-size: 22px;
+    font-family: "aleoregular", "sans-serif";
+    display: table;
+
+    span {
+        display: table-cell;
+        text-align: center;
+        vertical-align: middle;
+    }
+}
+
+.sidebar {
+    background-color: @even-darker-brown;
+    position: fixed;
+    top: 70px;
+    bottom: 0px;
+    padding: 20px 0px 0px;
+
+    .caption {
+        color: white;
+        text-transform: uppercase;
+        display: block;
+        text-align: center;        
+        margin-bottom: 20px;
+        color: @grey;
+    }
+
+    .menu-item {
+        color: @dashboard-bg;
+        text-transform: uppercase;
+        font-size: 16px;
+        padding:20px 30px;
+
+        i {
+            margin-right: 15px;
+        }
+    }
+
+
+
+    .menu-item.active {
+        color: @red-brown;
+        background-color: @dashboard-bg;
+        font-weight: bold;
+    }
+}
+
+.main {
+    padding-left: 30px;
+}
+
+.content-wrapper {
+    padding: 0px;
+}
+
+
 
 /** Headings */
 h1, h2, h3 {
@@ -47,7 +90,6 @@ h3 {
 }
 
 /** Navigation **/
-
 .navbar-inverse {
     background-color: @brown;
     border: none;
@@ -171,71 +213,6 @@ h1, h2, h3 {
     padding: 0px 15px 15px;
 }
 
-/**
- * Labels
- */
-.label {
-    padding: 6px;
-    font-weight: bold;
-    text-transform: uppercase;
-    font-size: 11px;
-}
-
-
-/**
- * Buttons
- */
-.btn {
-    padding: 10px 20px;
-    border-radius: 3px;
-    text-transform: uppercase;
-    font-weight: bold;
-    font-size: 12px;
-    background-color: @light-grey;
-    color: white;
-    border: none;
-}
-
-.btn.btn-danger {
-    background-color: @orange;
-}
-
-.btn.btn-danger:hover {
-    background-color: @dark-orange;
-}
-
-.btn-small {
-    padding: 6px 12px;
-}
-
-.btn:hover {
-    color: white;
-    background-color: @grey;
-}
-
-.btn-primary {
-    background-color: @lighter-orange;
-    border: none;
-}
-
-.btn-primary:active, .btn-primary.active {
-    background-color: @light-orange;
-    border: none;
-}
-
-.btn-primary:hover, .btn-primary.hover {
-    background-color: @orange;
-    border: none;
-}
-
-
-/** Main page elements */
-.promotion {
-    margin: -20px 0px 20px;
-    background-color: @dark-orange;
-    color: white;
-    height: 250px;
-}
 
 
 .branch-name {
@@ -291,8 +268,8 @@ h1, h2, h3 {
 }
 
 .page-heading {
+    text-transform: uppercase;
     margin-top: -20px;
-    background-color: white;
     padding-top: 30px;
     padding-bottom: 10px;
 
