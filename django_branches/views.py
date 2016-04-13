@@ -31,9 +31,9 @@ class LoginView(FormView):
 
     def form_valid(self, form):
         cleaned_data = form.cleaned_data
-        email = cleaned_data.get("email")
+        username = cleaned_data.get("username")
         password = cleaned_data.get("password")
-        user = authenticate(username=email, password=password)
+        user = authenticate(username=username, password=password)
         if user is not None:
             login(self.request, user)
             return redirect("dashboard")
