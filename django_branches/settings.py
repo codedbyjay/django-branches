@@ -102,7 +102,7 @@ CACHES = {
     'default': {
         'BACKEND': 'redis_cache.RedisCache',
         'LOCATION': [
-            'localhost:6379'
+            'redis'
         ],
         'OPTIONS': {
             'DB': 2,
@@ -121,8 +121,8 @@ CACHES = {
 DEBUG_TOOLBAR_PATCH_SETTINGS = False
 
 # Celery settings
-BROKER_URL = 'redis://localhost:6379/0'
-CELERY_RESULT_BACKEND = 'redis://localhost:6379/0'
+BROKER_URL = 'redis://redis'
+CELERY_RESULT_BACKEND = 'redis://redis'
 
 INTERNAL_IPS = ["192.168.0.2"]
 
