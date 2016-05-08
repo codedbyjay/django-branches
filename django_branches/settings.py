@@ -137,6 +137,6 @@ DEFAULT_FROM_EMAIL = 'admin@devbranch.io'
 SERVER_EMAIL = 'admin@devbranch.io'
 
 try:
-    from branches.local_settings import *
+    from django_branches.local_settings import *
 except ImportError:
     pass
