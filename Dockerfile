@@ -5,5 +5,5 @@ WORKDIR /code
 ADD . /code
 ADD requirements.txt /code/
 RUN pip install -r requirements.txt
-RUN apt-get update --fix-missing && apt-get -y install openssh-client
+RUN apt-get update --fix-missing && apt-get -y install openssh-client make
 RUN adduser --disabled-password --gecos '' myuser
