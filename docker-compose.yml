@@ -4,7 +4,7 @@ services:
         image: postgres
     web:
         build: .
-        command: python manage.py runserver_plus 0.0.0.0:8000
+        command: python manage.py runserver 0.0.0.0:8000
         volumes:
             - .:/code
         ports:
@@ -20,8 +20,9 @@ services:
             - db
         depends_on:
             - redis
-        volumes:
-            - .:/code
+            - web
+        volumes_from:
+            - web
         command: su -m myuser -c "celery worker -A branches -l info"
     redis:
         image: redis:latest
