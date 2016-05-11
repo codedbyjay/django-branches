@@ -11,15 +11,16 @@ services:
             -  "8000:8000"
         links:
             - db
-            - celery
             - redis
     celery:
         build: .
         links:
             - redis
             - db
+            - web
         depends_on:
             - redis
+            - web
         volumes_from:
             - web
         command: su -m myuser -c "celery worker -A branches -l info"
