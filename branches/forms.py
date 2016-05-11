@@ -14,14 +14,14 @@ from branches.models import *
 
 class LoginForm(forms.Form):
 
-    email = forms.EmailField()
+    username = forms.CharField()
     password = forms.CharField(widget=forms.PasswordInput)
 
     def __init__(self, *args, **kwargs):
         super(LoginForm, self).__init__(*args, **kwargs)
         self.helper = FormHelper()
         self.helper.layout = Layout(
-            'email',
+            'username',
             'password',
             FormActions(
                 Submit('login', 'Login'),
@@ -37,7 +37,7 @@ class RegistrationForm(CoreRegistrationForm):
         self.helper.layout = Layout(
             'username',
             'email',
-            'password',
+            'password1',
             'password2',
             FormActions(
                 Submit('signup', 'Create Account'),
