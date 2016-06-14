@@ -10,8 +10,9 @@
 
 {% block content %}
     <div class="page-actions">
-        <a href="{% url 'branches:server-edit' pk=server.pk %}" class="pull-right"><button class="btn btn-normal">Edit</button></a>
-        <a href="{% url 'branches:server-delete' pk=server.pk %}" class="pull-right"><button class="btn btn-normal">Delete</button></a>
+        <a href="{% url 'branches:server-edit' pk=server.pk %}" class="pull-right"><button class="btn btn-normal btn-circle"><i class="fa fa-pencil"></i></button></a>
+        <a href="{% url 'branches:server-delete' pk=server.pk %}" class="pull-right"><button class="btn btn-normal btn-circle"><i class="fa fa-trash"></i></button></a>
+        <a href="{% url 'branches:new-project' pk=server.pk %}" class="pull-right"><button class="btn btn-success"><i class="fa fa-briefcase"></i>&nbsp;Add project</button></a>
     </div>
 
 {% for project in server.projects.all %}
