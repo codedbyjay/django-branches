@@ -14,25 +14,6 @@
         <a href="{% url 'branches:server-delete' owner=server.owner.username project=server.project.slug server=server.slug %}" class="pull-right"><button class="btn btn-normal btn-circle"><i class="fa fa-trash"></i></button></a>
     </div>
 
-{% for project in server.projects.all %}
-    {% if forloop.first %}
-        <div class="row">
-    {% endif %}
-
-    <div class="col-sm-4 col-md-4 col-lg-4">
-        {% render_project project full=False %}
-    </div>
-
-    {% if forloop.counter|divisibleby:3 %}
-        </div>
-        <div class="row">
-    {% endif %}
-
-    {% if forloop.last %}
-        </div>
-    {% endif %}
-{% empty %}
-No projects just yet.
-{% endfor %}
+    {% render_server server full=True %}
 
 {% endblock content %}
