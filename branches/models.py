@@ -114,6 +114,9 @@ class Project(OwnerMixin, TimeStampedModel):
     team = models.ForeignKey(
         Team, blank=True, null=True, editable=False, related_name="projects")
 
+    def __str__(self):
+        return self.name
+
     def get_absolute_url(self):
         return reverse(
             "branches:project-detail", kwargs=dict(owner=self.owner))
@@ -157,7 +160,7 @@ class Server(OwnerMixin, TimeStampedModel):
     name = models.CharField(max_length=255)
     slug = AutoSlugField(populate_from='name', editable=False)
     project = models.ForeignKey(
-        "Project", related_name="servers", editable=False)
+        "Project", related_name="servers")
     user = models.ForeignKey(
         settings.AUTH_USER_MODEL, blank=True, null=True, editable=False,
         related_name="servers")
@@ -178,11 +181,10 @@ class Server(OwnerMixin, TimeStampedModel):
     def connect(self):
         """ A context manager that allows connection to the server
         """
-        setup_fabric_environment(
+        return setup_fabric_environment(
             self.address, 
             username=self.username,
             port=self.port)
-        yield
 
     @property
     def location(self):
@@ -191,10 +193,6 @@ class Server(OwnerMixin, TimeStampedModel):
     @property
     def change_branch_script(self):
         return self.project.change_branch_script
-
-    @property
-    def owner(self):
-        return self.team if self.team else self.user
 
     def execute(self, cmd):
         """ Runs a command on the server via the Celery process.
@@ -210,7 +208,14 @@ class Server(OwnerMixin, TimeStampedModel):
         return result
 
     def get_absolute_url(self):
-        return reverse("branches:server-detail", kwargs=dict(pk=self.pk))
+        project = self.project
+        owner = self.owner.username
+        return reverse(
+            "branches:server-detail", 
+            kwargs=dict(
+                owner=owner,
+                project=project.slug,
+                server=self.slug))
 
     def get_log(self, limit=7):
         """ Returns `limit` lines of the last log of a script that was running

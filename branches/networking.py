@@ -1,3 +1,5 @@
+import contextlib
+
 from fabric.api import env, run, execute, cd
 from fabric.contrib.files import append
 
@@ -37,6 +39,7 @@ def test_keyfile(hostname, username, key_filename, port=22, timeout=15):
         return False
 
 
+@contextlib.contextmanager
 def setup_fabric_environment(address, username=None, password=None, port=22):
     env["hosts"] = [address]
     env["user"] = username
@@ -45,4 +48,5 @@ def setup_fabric_environment(address, username=None, password=None, port=22):
     else:
         env["key_filename"] = get_key_filename()
     env["port"] = port
+    yield
 
