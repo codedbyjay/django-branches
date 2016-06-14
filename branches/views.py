@@ -1,15 +1,23 @@
+from datetime import datetime
+
 from django.shortcuts import render, redirect, get_object_or_404
 from django.core.urlresolvers import reverse, reverse_lazy
-from django.views.generic import FormView
+from django.views.generic import FormView, RedirectView
 from django.views.generic.list import ListView
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
 from django.views.generic.detail import DetailView
 from django.http import HttpResponse
 from django.views.generic.detail import SingleObjectMixin
+from django.conf import settings
 
-from .models import Server, Repository, copy_key_to_server, Project
+import pyrax
+from requests_oauthlib import OAuth2Session
+import digitalocean
+
+from .models import Server, Repository, copy_key_to_server, Project, UserProfile
 from .forms import (
-    NewServerForm, InitializeServerForm, NewProjectForm, NewRepositoryForm
+    NewServerForm, InitializeServerForm, NewProjectForm, NewRepositoryForm, 
+    RackspaceConnectForm
 )
 
 class ServerListView(ListView):
@@ -112,10 +120,23 @@ class ServerLogView(DetailView):
     context_object_name = "server"
     template_name = "branches/server_log.html"
 
+class ProjectListView(ListView):
+
+    model = Project
+    context_object_name = "project"
+
+    def get_context_data(self, **kwargs):
+        ctx = super(ProjectListView, self).get_context_data(**kwargs)
+        ctx["page"] = "project-list"
+        return ctx
+
+
 class ProjectDetailView(DetailView):
 
     model = Project
     context_object_name = "project"
+    slug_field = "slug"
+    slug_url_kwarg = "project_slug"
 
 class ProjectUpdateView(UpdateView):
     model = Project
@@ -133,14 +154,118 @@ class NewProjectView(CreateView):
     model = Project
     form_class = NewProjectForm
 
-    def form_valid(self, form):
-        pk = self.kwargs.get("pk")
-        server = get_object_or_404(Server, pk=pk)
-        self.server = server
-        instance = form.save(commit=False)
-        instance.server = server
-        instance.save()
-        return redirect(self.get_success_url())
-
     def get_success_url(self):
-        return reverse("branches:server-detail", kwargs=dict(pk=self.server.pk))
+        return self.get_object().get_absolute_url()
+
+    def get_form_kwargs(self):
+        kwargs = super(NewProjectView, self).get_form_kwargs()
+        kwargs["user"] = self.request.user
+        return kwargs
+        
+
+class RackspaceConnectView(FormView):
+
+    form_class = RackspaceConnectForm
+    template_name = "branches/rackspace_connect.html"    
+
+    def get(self, request, *args, **kwargs):
+        profile = UserProfile.get_profile(self.request.user)
+        if profile.rackspace_username and profile.rackspace_api_key:
+            return redirect("branches:rackspace-server-list")
+        return super(RackspaceConnectView, self).get(request, *args, **kwargs)
+
+    def form_valid(self, form):
+        cleaned_data = form.cleaned_data
+        api_key = cleaned_data.get("api_key")
+        username = cleaned_data.get("username")
+        profile = UserProfile.get_profile(self.request.user)
+        profile.rackspace_username = username
+        profile.rackspace_api_key = api_key
+        profile.save()
+        return redirect("branches:rackspace-server-list")
+
+
+class RackspaceServerListView(ListView):
+
+    context_object_name = "servers"
+    template_name = "branches/rackspace_server_list.html"
+
+    def get_queryset(self):
+        pyrax.set_setting("identity_type", "rackspace")
+        profile = UserProfile.get_profile(self.request.user)
+        username = profile.rackspace_username
+        api_key = profile.rackspace_api_key
+        pyrax.set_credentials(username, api_key)
+        return pyrax.cloudservers.list()
+
+    def post(self, request, *args, **kwargs):
+        data = request.POST
+        server_ids = data.getlist("server")
+        servers = [server for server in self.get_queryset() if server.id in server_ids]
+        for server in servers:
+            address = server.networks.get("public")[0]
+            Server.objects.create(name=server.name, address=address)
+        return redirect("branches:server-list")
+
+
+
+class DigitalOceanConnectView(RedirectView):
+
+    def get_oauth(self):
+        client_id = settings.DIGITAL_OCEAN_CLIENT_ID
+        client_secret = settings.DIGITAL_OCEAN_CLIENT_SECRET
+        redirect_uri = "%s%s" % (
+            settings.SITE_URL, reverse("branches:digitalocean-authorize"))
+        scope = ["read"]
+        oauth = OAuth2Session(
+            client_id, 
+            redirect_uri=redirect_uri,
+            scope=scope)        
+        return oauth
+
+    def get_redirect_url(self, *args, **kwargs):
+        url = "https://cloud.digitalocean.com/v1/oauth/authorize"
+        oauth = self.get_oauth()
+        authorization_url, state = oauth.authorization_url(
+            url)
+        print("Authorization url is: %s" % authorization_url)
+        return authorization_url
+
+class DigitalOceanAuthorizeView(DigitalOceanConnectView):
+
+    def get_redirect_url(self, *args, **kwargs):
+        print(self.request.GET)
+        data = self.request.GET
+        code = data.get("code")
+        oauth = self.get_oauth()
+        callback = "%s%s" % (settings.SITE_URL, self.request.path)
+        token = oauth.fetch_token(
+            "https://cloud.digitalocean.com/v1/oauth/token",
+            code=code,
+            client_secret=settings.DIGITAL_OCEAN_CLIENT_SECRET)
+        access_token = token.get("access_token")
+        refresh_token = token.get("refresh_token")
+        expires_at = datetime.fromtimestamp(int(token.get("expires_at")))
+        profile = UserProfile.get_profile(self.request.user)
+        profile.digitalocean_access_token = access_token
+        profile.digitalocean_refresh_token = refresh_token
+        profile.digitalocean_access_token_expiry = expires_at
+        profile.save()
+        return reverse("branches:digitalocean-server-list")
+
+class DigitalOceanServerListView(ListView):
+
+    context_object_name = "servers"
+    template_name = "branches/rackspace_server_list.html"
+
+    def get_queryset(self):
+        profile = UserProfile.get_profile(self.request.user)
+        manager = digitalocean.Manager(token=profile.digitalocean_access_token)
+        servers = []
+        for droplet in manager.get_all_droplets():
+            print("Examining this droplet: %s" % droplet)
+            name = droplet.name
+            servers.append(Server(name=name))
+        return servers
+
+
