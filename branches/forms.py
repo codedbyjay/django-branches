@@ -215,3 +215,45 @@ class NewRepositoryForm(ModelForm):
             css_class='branches-form'),
         )
         return result
+
+
+class RackspaceConnectForm(forms.Form):
+
+    username = forms.CharField(initial="monainformatix")
+    api_key = forms.CharField(initial="0fc3f1cf815af6c75d7e3f75067d283f")
+
+    def __init__(self, *args, **kwargs):
+        result = super(RackspaceConnectForm, self).__init__(*args, **kwargs)
+        self.helper = FormHelper()
+        self.helper.layout = Layout(
+            Div(
+                Div(
+                    HTML("<span class='title'>Rackspace Connect</span>"),
+                    HTML("<span class='instructions'>Enter your username and API key</span>"),
+                    css_class='form-header'),
+                'username',
+                'api_key',
+                FormActions(
+                    Submit('create', 'Connect to Rackspace'),
+                ),
+            css_class='branches-form'),
+        )
+        return result
+
+    def clean(self):
+        """ Verify that the credentials works
+        """
+        cleaned_data = self.cleaned_data
+        username = cleaned_data.get("username")
+        api_key = cleaned_data.get("api_key")
+        pyrax.set_setting("identity_type", "rackspace")
+        try:
+            print("Testing Rackspace credentials for: %s" % username)
+            pyrax.set_credentials(username, api_key)
+        except pyrax.exc.AuthenticationFailed:
+            raise forms.ValidationError(
+                "Incorrect API key or userame")
+        return cleaned_data
+
+
+
