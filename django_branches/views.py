@@ -13,12 +13,17 @@ from branches.views import ProjectListView
 
 class HomeView(ProjectListView):
 
-    template_name = "branches/project_list.html"
+    template_name = "branches/home.html"
 
     def get(self, request, *args, **kwargs):
-        if not self.request.user.is_authenticated():
-            self.template_name = "branches/home.html"
+        if self.request.user.is_authenticated():
+            self.template_name = "branches/dashboard.html"
         return super(HomeView, self).get(request, *args, **kwargs)
+
+    def get_context_data(self, **kwargs):
+        ctx = super(HomeView, self).get_context_data(**kwargs)
+        ctx["page"] = "home"
+        return ctx
 
 
 class RegistrationView(CoreRegistrationView):
