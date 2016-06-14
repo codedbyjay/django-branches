@@ -265,6 +265,67 @@ h1, h2, h3 {
 }
 
 
+/**
+ * Dashboard panels (extends Bootstrap panel styling)
+ */
+.dashboard-panel {
+    .panel-heading {
+        height: 100px;
+        background-color: @orange;
+        padding: 30px;
+
+        .panel-title {
+            font-size: 30px;
+            font-family: "aleoregular";
+            color: white;
+        }
+
+        img {
+            float: right;
+            margin-top: -10px;
+            margin-right: -10px;
+        }
+
+
+        span.panel-icon {
+            font-size: 45px;
+            position: absolute;
+            top: 20px;
+            right: 40px;
+        }
+    }
+
+    .panel-body {
+        padding: 40px;
+        line-height: 40px;
+        font-family: dosis;
+        font-size: 18px;
+    }
+}
+
+.dashboard-panel-orange {
+    .panel-heading {
+        background-color: @hot-orange;
+
+        .panel-title {
+            color: black;
+        }
+    }
+}
+
+.dashboard-panel-blue {
+    .panel-heading {
+        background-color: @digital-ocean-blue;
+
+        .panel-title {
+            color: black;
+        }
+    }
+}
+
+
+
+
 
 .branch-name {
     color: #0f0f0f;
