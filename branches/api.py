@@ -9,15 +9,15 @@ from tastypie import fields
 
 from branches.models import *
 
-class ServerResource(ModelResource):
-    class Meta:
-        queryset = Server.objects.all()
-        resource_name = "server"
-
 class ProjectResource(ModelResource):
     class Meta:
         queryset = Project.objects.all()
         resource_name = "project"
+
+class ServerResource(ModelResource):
+    class Meta:
+        queryset = Server.objects.all()
+        resource_name = "server"
 
     def prepend_urls(self):
         return [
@@ -33,26 +33,26 @@ class ProjectResource(ModelResource):
 
     def get_current_branch(self, request, **kwargs):
         pk = kwargs.get("pk")
-        project = get_object_or_404(Project, pk=pk)
+        server = get_object_or_404(Server, pk=pk)
         response = json.dumps(dict(branch=project.current_branch))
         return HttpResponse(response, content_type="application/json")
 
     def update_branch_list(self, request, **kwargs):
         pk = kwargs.get("pk")
-        project = get_object_or_404(Project, pk=pk)
+        server = get_object_or_404(Server, pk=pk)
         branches = project.update_branch_list()
         return JsonResponse(dict(message="Updated branch list", result=True, 
             branches=branches))
 
     def get_branches(self, request, **kwargs):
         pk = kwargs.get("pk")
-        project = get_object_or_404(Project, pk=pk)
+        server = get_object_or_404(Server, pk=pk)
         response = json.dumps(project.available_branches)
         return HttpResponse(response, content_type="application/json")
 
     def change_branch(self, request, **kwargs):
         pk = kwargs.get("pk")
-        project = get_object_or_404(Project, pk=pk)
+        server = get_object_or_404(Server, pk=pk)
         new_branch = request.POST.get("branch")
         if not new_branch:
             return JsonResponse(dict(result=False, message="Please supply a branch"))
@@ -62,7 +62,7 @@ class ProjectResource(ModelResource):
 
     def cancel_change_branch(self, request, **kwargs):
         pk = kwargs.get("pk")
-        project = get_object_or_404(Project, pk=pk)
+        server = get_object_or_404(Server, pk=pk)
         last_change_branch_request = project.last_change_branch_request
         if last_change_branch_request.complete or last_change_branch_request.cancelled:
             return JsonResponse(dict(result=False, message="No branch change in progress, nothing to change"))
@@ -74,7 +74,7 @@ class ProjectResource(ModelResource):
     def log(self, request, **kwargs):
         limit = request.GET.get("limit", 7)
         pk = kwargs.get("pk")
-        project = get_object_or_404(Project, pk=pk)
+        server = get_object_or_404(Server, pk=pk)
         log = project.get_log(limit=limit)
         response = json.dumps(dict(log=log, 
             is_changing_branch=project.is_changing_branch,
@@ -84,7 +84,7 @@ class ProjectResource(ModelResource):
     def get_commits(self, request, **kwargs):
         limit = request.GET.get("limit", 50)
         pk = kwargs.get("pk")
-        project = get_object_or_404(Project, pk=pk)
+        server = get_object_or_404(Server, pk=pk)
         commits = project.get_commits(limit=limit)
         response = json.dumps(dict(commits=commits))
         return HttpResponse(response, content_type="application/json")
@@ -93,11 +93,11 @@ class ProjectResource(ModelResource):
         print("I got as far as here...")
         limit = request.GET.get("limit", 50)
         pk = kwargs.get("pk")
-        project = get_object_or_404(Project, pk=pk)
+        server = get_object_or_404(Server, pk=pk)
         info = project.get_status(limit=limit)
         last_change_branch_request = project.last_change_branch_request
         if last_change_branch_request:
-            resource = ChangeBranchRequestResource()
+            resource = RequestResource()
             resource_bundle = resource.build_bundle(obj=last_change_branch_request, request=request)
             bundle_json = resource.serialize(None, resource.full_dehydrate(resource_bundle), 'application/json')
             info["last_change_branch_request"] = json.loads(bundle_json)
@@ -108,9 +108,9 @@ class ProjectResource(ModelResource):
 
 
 
-class ChangeBranchRequestResource(ModelResource):
+class RequestResource(ModelResource):
     class Meta:
-        queryset = ChangeBranchRequest.objects.all()
+        queryset = Request.objects.all()
         resource_name = "change-branch-request"
 
     def dehydrate(self, bundle):
@@ -130,5 +130,5 @@ class ChangeBranchRequestResource(ModelResource):
         ]
 
     def log(self, request, pk, **kwargs):
-        change_branch_request = get_object_or_404(ChangeBranchRequest, pk=pk)
+        change_branch_request = get_object_or_404(Request, pk=pk)
         return HttpResponse(change_branch_request.change_branch_log.get_log(limit=1000))
