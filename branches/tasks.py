@@ -1,7 +1,7 @@
 from fabric.api import env, run, execute, cd
 from fabric.contrib.files import append
 
-from .networking import connect, test_credentials
+from .networking import setup_fabric_environment, test_credentials
 from .system import get_ssh_key
 from branches.celery import app
 
@@ -17,7 +17,7 @@ def copy_key_to_server(server_pk, username, password, port):
     if not test_credentials(server.address, username, password, port):
         print("Credentials failed")
         return False
-    with connect(server, username, password, port):
+    with server.connect():
         print("Copying up the key now...")
         key = get_ssh_key()
         execute(lambda: append("~/.ssh/authorized_keys", key))
@@ -29,10 +29,10 @@ def copy_key_to_server(server_pk, username, password, port):
 
 
 @app.task(bind=True)
-def change_server_branch(self, project_pk, branch, change_branch_request):
+def change_server_branch(self, server_pk, branch, request):
     from branches.models import Project
-    project = Project.objects.get(pk=project_pk)
+    project = Project.objects.get(pk=server_pk)
     return project.change_branch(
-        branch, self.request.id, change_branch_request)
+        branch, self.request.id, request)
 
 

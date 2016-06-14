@@ -37,26 +37,12 @@ def test_keyfile(hostname, username, key_filename, port=22, timeout=15):
         return False
 
 
-class connect(object):
-    """ Context manager to allow us to connect to servers
-    """
+def setup_fabric_environment(address, username=None, password=None, port=22):
+    env["hosts"] = [address]
+    env["user"] = username
+    if username and password:
+        env["password"] = password
+    else:
+        env["key_filename"] = get_key_filename()
+    env["port"] = port
 
-    def __init__(self, server, username=None, password=None, port=22):
-        print("Connecting to %s" % server)
-        self.server = server
-        self.username = server.username or username
-        self.password = password
-        self.port = server.port or port
-
-    def __enter__(self):
-        # connect to the Server
-        env["hosts"] = [self.server.address]
-        env["user"] = self.username
-        if self.username and self.password:
-            env["password"] = self.password
-        else:
-            env["key_filename"] = get_key_filename()
-        env["port"] = self.port
-
-    def __exit__(self, *args, **kwargs):
-        pass
