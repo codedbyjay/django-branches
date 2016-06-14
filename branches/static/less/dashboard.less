@@ -13,6 +13,40 @@ body {
     position: fixed;
     top: 0px;
     width: 100%;
+
+    .status {
+        height: 70px;
+    }
+
+    .profile {
+        height: 100%;
+        margin-right: -15px;
+        padding: 10px;
+        background-color: @light-brown-grey;
+        color: @even-darker-brown;
+        width: 220px;
+
+        .name {
+            float: right;
+            font-weight: bold;
+            font-family: "aleoregular";
+            display: table;
+            height: 100%;
+
+            span {
+                display: table-cell;
+                vertical-align: middle;
+            }
+        }
+
+        .logout-link {
+            float: right;
+        }
+
+        img {
+            margin-left: 20px;
+        }
+    }
 }
 
 .brand {
