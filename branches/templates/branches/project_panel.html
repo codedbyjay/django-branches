@@ -10,12 +10,12 @@
             </h2>
       </div>
       <div class="panel-body">
-            {% for server in project.server.all %}
+            {% for server in project.servers.all %}
                 <div class="server" id="server-{{ server.pk }}">
                     <div class="server-header">
                         <h3>
                             <i class="fa fa-desktop"></i>&nbsp;
-                            <a href="{% url 'branches:server-detail' owner=server.owner.username project=server.project.slug server=server.slug %}">{{ server.repository.name }}</a>
+                            <a href="{% url 'branches:server-detail' owner=server.owner.username project=server.project.slug server=server.slug %}">{{ server.name }}</a>
                         </h3>
                         <span class="server-branch-information">Currently on 
                             <span class="branch-name">
