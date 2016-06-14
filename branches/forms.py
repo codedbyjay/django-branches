@@ -6,8 +6,8 @@ from crispy_forms.layout import Layout, Submit, Button, HTML, Div, Field
 from crispy_forms.bootstrap import FormActions
 
 from fabric.api import env, run, execute, cd
-
 from registration.forms import RegistrationForm as CoreRegistrationForm
+import pyrax
 
 from branches.models import *
 
@@ -196,7 +196,7 @@ class NewRepositoryForm(ModelForm):
 
     class Meta:
         model = Repository
-        fields = ["name", "url"]
+        fields = ["name"]
 
     def __init__(self, *args, **kwargs):
         result = super(NewRepositoryForm, self).__init__(*args, **kwargs)
@@ -208,7 +208,6 @@ class NewRepositoryForm(ModelForm):
                     HTML("<span class='instructions'>Enter the details for your repository</span>"),
                     css_class='form-header'),
                 'name',
-                'url',
                 FormActions(
                     Submit('create', 'Add Repository'),
                 ),
