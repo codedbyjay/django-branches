@@ -11,6 +11,17 @@ import pyrax
 
 from branches.models import *
 
+def get_owner_choices(user):
+    choices = [(user.username, user.username)]
+    for team in user.teams.all():
+        choices.append((team.name, team.name))
+    return choices
+
+def get_owner_widget(user):
+    return forms.Select(choices=get_owner_choices(user))
+
+def get_owner_form_field(user):
+    return forms.CharField(widget=get_owner_widget(user))
 
 class LoginForm(forms.Form):
 
@@ -49,12 +60,14 @@ class NewServerForm(ModelForm):
 
     class Meta:
         model = Server
-        fields = ["name", "address", "description", "port"]
+        fields = ["name", "address", "description", "port", "project"]
         exclude = ["initialized"]
 
     def __init__(self, *args, **kwargs):
+        self.user = kwargs.pop("user")
         result = super(NewServerForm, self).__init__(*args, **kwargs)
         instance = kwargs.get("instance", None)
+        self.fields["owner"] = get_owner_form_field(self.user)
         self.helper = FormHelper()
         self.helper.layout = Layout(
             Div(
@@ -62,6 +75,8 @@ class NewServerForm(ModelForm):
                     HTML("<span class='title'>Create a server</span>"),
                     HTML("<span class='instructions'>Enter the details about your server</span>"),
                     css_class='form-header'),
+                'owner',
+                'project',
                 'name',
                 'address',
                 'description',
@@ -128,11 +143,7 @@ class NewProjectForm(ModelForm):
         self.user = kwargs.pop("user")
         self.username = self.user.username
         result = super(NewProjectForm, self).__init__(*args, **kwargs)
-        choices = [(self.username, self.username)]
-        for team in self.user.teams.all():
-            choices.append((team.name, team.name))
-        select = forms.Select(choices=choices)
-        self.fields["owner"] = forms.CharField(widget=select)
+        self.fields["owner"] = get_owner_form_field(self.user)
         self.fields["change_branch_script"] = forms.CharField(
             widget=forms.Textarea, required=False)
         self.helper = FormHelper()
