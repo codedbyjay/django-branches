@@ -122,10 +122,19 @@ class NewProjectForm(ModelForm):
 
     class Meta:
         model = Project
-        fields = ["repository", "location", "change_branch_script"]
+        fields = ["name"]
 
     def __init__(self, *args, **kwargs):
+        self.user = kwargs.pop("user")
+        self.username = self.user.username
         result = super(NewProjectForm, self).__init__(*args, **kwargs)
+        choices = [(self.username, self.username)]
+        for team in self.user.teams.all():
+            choices.append((team.name, team.name))
+        select = forms.Select(choices=choices)
+        self.fields["owner"] = forms.CharField(widget=select)
+        self.fields["change_branch_script"] = forms.CharField(
+            widget=forms.Textarea, required=False)
         self.helper = FormHelper()
         self.helper.layout = Layout(
             Div(
@@ -133,8 +142,8 @@ class NewProjectForm(ModelForm):
                     HTML("<span class='title'>New Project</span>"),
                     HTML("<span class='instructions'>Enter the details for your project</span>"),
                     css_class='form-header'),
-                'repository',
-                'location',
+                'owner',
+                'name',
                 'change_branch_script',
                 FormActions(
                     Submit('create', 'Add Project'),
@@ -142,6 +151,32 @@ class NewProjectForm(ModelForm):
             css_class='branches-form'),
         )
         return result
+
+    def save(self, commit=True):
+        owner = self.cleaned_data.pop("owner")
+        change_branch_script = self.cleaned_data.pop("change_branch_script")
+        instance = super(NewProjectForm, self).save(commit=False)
+        instance.owner = owner
+        instance.save()
+        if instance.change_branch_script:
+            script = instance.change_branch_script
+            script.text = change_branch_script
+            script.save()
+        else:
+            script_kwargs = {
+                "project": instance,
+                "title": "%s change branch script" % instance,
+                "text": change_branch_script,
+                "author": self.user,
+            }
+            script = Script(**script_kwargs)
+            script.owner = owner
+            script.save()
+            instance.change_branch_script = script
+            instance.save()
+
+
+
 
 class ChangeBranchForm(forms.Form):
 
