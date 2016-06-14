@@ -56,6 +56,8 @@ INSTALLED_APPS = (
     'crispy_forms',
     'debug_toolbar',
 
+    'docs',
+    'django_gravatar',
 
     'branches',
 )
@@ -147,6 +149,6 @@ DEFAULT_FROM_EMAIL = 'admin@devbranch.io'
 SERVER_EMAIL = 'admin@devbranch.io'
 
 try:
-    from django_branches.local_settings import *
+    from branches.local_settings import *
 except ImportError:
     pass
