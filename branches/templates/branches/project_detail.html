@@ -2,7 +2,7 @@
 {% load project_tags %}
 
 {% block page_title %}
-    <a href="{% url 'branches:server-detail' pk=project.server.pk %}" class="back-link">
+    <a href="{% url 'branches:project-list' owner=owner %}" class="back-link">
         <i class="fa fa-chevron-left"></i>
     </a>
 
@@ -11,8 +11,8 @@
 
 {% block content %}
     <div class="page-actions">
-        <a href="{% url 'branches:project-edit' pk=project.pk %}" class="pull-right"><button class="btn btn-normal">Edit</button></a>
-        <a href="{% url 'branches:project-delete' pk=project.pk %}" class="pull-right"><button class="btn btn-normal">Delete</button></a>
+        <a href="{% url 'branches:project-edit' owner=project.owner project_slug=project.slug %}" class="pull-right"><button class="btn btn-normal">Edit</button></a>
+        <a href="{% url 'branches:project-delete' owner=project.owner project_slug=project.slug %}" class="pull-right"><button class="btn btn-normal">Delete</button></a>
     </div>
     {% render_project project full=True %}
 {% endblock content %}

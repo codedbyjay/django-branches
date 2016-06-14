@@ -6,9 +6,8 @@
             <h2 class="panel-title">
                 <i class="fa fa-github"></i>
                 &nbsp;
-                <a href="{% if full %}#{% else %}{% url 'branches:project-detail' pk=project.pk %}{% endif %}">{{ project.repository.name }}</a>
+                <a href="{% if full %}#{% else %}{% url 'branches:project-detail' project_slug=project.slug owner=project.owner.username %}{% endif %}">{{ project.name }}</a>
             </h2>
-            <span class="server-address"><i class="fa fa-desktop"></i>&nbsp;&nbsp;Hosted on <a href="{% url 'branches:server-detail' pk=project.server.pk %}">{{ project.server.name }}</a></span>
       </div>
       <div class="panel-body">
             <div class="project {% if full %}full{% endif %}" id="project-{{ project.pk }}">
