@@ -1,8 +1,8 @@
 {% extends "branches/dashboard.html" %}
-{% load project_tags %}
+{% load server_tags %}
 
 {% block page_title %}
-    <a href="{% url 'branches:server-list' %}" class="back-link">
+    <a href="{% url 'branches:project-detail' owner=server.project.owner project=server.project.slug %}" class="back-link">
         <i class="fa fa-chevron-left"></i>
     </a>
     <i class="fa fa-desktop"></i>&nbsp;&nbsp;{{ server.name }}
@@ -10,9 +10,8 @@
 
 {% block content %}
     <div class="page-actions">
-        <a href="{% url 'branches:server-edit' pk=server.pk %}" class="pull-right"><button class="btn btn-normal btn-circle"><i class="fa fa-pencil"></i></button></a>
-        <a href="{% url 'branches:server-delete' pk=server.pk %}" class="pull-right"><button class="btn btn-normal btn-circle"><i class="fa fa-trash"></i></button></a>
-        <a href="{% url 'branches:new-project' pk=server.pk %}" class="pull-right"><button class="btn btn-success"><i class="fa fa-briefcase"></i>&nbsp;Add project</button></a>
+        <a href="{% url 'branches:server-edit' owner=server.owner.username project=server.project.slug server=server.slug %}" class="pull-right"><button class="btn btn-normal btn-circle"><i class="fa fa-pencil"></i></button></a>
+        <a href="{% url 'branches:server-delete' owner=server.owner.username project=server.project.slug server=server.slug %}" class="pull-right"><button class="btn btn-normal btn-circle"><i class="fa fa-trash"></i></button></a>
     </div>
 
 {% for project in server.projects.all %}
