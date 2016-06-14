@@ -39,6 +39,7 @@ TEMPLATE_CONTEXT_PROCESSORS = (
     "django.core.context_processors.tz",
     "django.contrib.messages.context_processors.messages",
     "branches.context_processors.resource_owner",
+    "django_branches.context_processors.page",
 )
 
 # Application definition
