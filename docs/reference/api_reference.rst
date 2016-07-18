@@ -68,3 +68,37 @@ Models
     A script that is run each time the branch changes
 
 
+Signals
+=======
+The following signals are used to allow the system to know when to send messages to different channels.
+
+    ..  attribute:: request_created 
+
+        This signal is dispatched whenever a new request is created.
+
+        -   ``server`` - the slug of the server.
+        -   ``project`` - the slug of the project.
+        -   ``owner`` - the slug for the owner of the server / project.
+        -   ``branch`` - the target branch of the request.
+        -   ``current_branch`` - the branch the server is currently on (at the time of request creation).
+
+    ..  attribute:: request_started
+
+        This signal is dispatched when a Celery worker has picked up the request and started to action it. 
+
+    ..  attribute:: request_cancel
+
+        This signal is dispatched when someone opts to cancel the request.
+
+    ..  attribute:: request_cancelling
+
+        This signal is dispatched when the request is in the process of being cancelled. This typically involves asking Celery to stop a task which may take a few milliseconds.
+
+    ..  attribute:: request_cancelled
+
+        This signal is dispatched when the request is finally cancelled.
+
+    ..  attribute:: request_completed
+
+        This signal is fired when a request has run to completion.
+

@@ -12,5 +12,6 @@ Django Branches
    :maxdepth: 2
 
    reference/api_reference.rst
+   reference/javascript_api_reference.rst
    todo.rst
 
