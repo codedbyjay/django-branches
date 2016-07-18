@@ -1,36 +1,14 @@
-(function(){
-    function ServerViewModel(projectId){
+define(['jquery', 'ko', 'branches'], function($, ko, branches){
+
+    function Server(serverSlug){
         var self = this;
-        self.projectId = projectId;
+        this.serverSlug = serverSlug;
 
         /**
          * Keeps track of whether is being processed by the server
          * @type {Boolean}
          */
         self.busy = ko.observable(true);
-
-        /**
-         * An ID for a ChangeBranchRequest we're watching
-         * @type {[type]}
-         */
-        self.changeBranchRequest = ko.observable();
-        /**
-         * When this is true we keep looking at the server log...
-         * @type {[type]}
-         */
-        self.changingBranches = ko.observable(false);
-
-        /**
-         * Keeps track of when we're updating the list of branches
-         * @type {[type]}
-         */
-        self.updatingBranches = ko.observable(false);
-
-        /**
-         * When the branch is being changed, we regularly update the log
-         * @type {[type]}
-         */
-        self.changeBranchLog = ko.observable("");
 
         /**
          * The branch the server is on
@@ -57,10 +35,6 @@
 
         self.branchSelect = null;
 
-        self.canChangeBranch = ko.computed(function(){
-            return !self.changingBranches() && self.currentBranch() != self.selectedBranch() && self.selectedBranch();
-        });
-
         /**
          * Removes the currently selected branch
          * @return {[type]} [description]
@@ -71,44 +45,26 @@
             }
         };
 
+        /**
+         * Disables the selectize control for changing branches
+         * @return {[type]} [description]
+         */
         self.disableBranchSelect = function(){
             if(self.branchSelect){
                 self.branchSelect.disable();
             }
         };
 
+        /**
+         * Enables the selectize control for changing branches
+         * @return {[type]} [description]
+         */
         self.enableBranchSelect = function(){
             if(self.branchSelect){
                 self.branchSelect.enable();
             }
         };
 
-        self.updateServerLog = function(){
-            if(!self.changeBranchRequest()){
-                return;
-            }
-            $.get("/branches/api/v1/change-branch-request/" + self.changeBranchRequest() + "/").then(function(data){
-                var complete = data.complete || data.cancelled;
-                self.changingBranches(!complete);
-                self.changeBranchLog(data.log);
-                if(!complete){
-                    window.setTimeout(function(){
-                        self.updateServerLog();
-                    }, 3000);
-                } else {
-                    self.getStatus();
-                }
-            });
-        };
-
-        self.changingBranches.subscribe(function(newValue){
-            if(newValue){
-                self.disableBranchSelect();
-                self.updateServerLog();
-            } else {
-                self.enableBranchSelect();
-            }
-        });
 
         /**
          * Changes the branch on the server to the selected branch
@@ -189,11 +145,7 @@
                 self.branchSelect.addOption(branches);
                 self.branchSelect.refreshOptions();
             }
-
         };
-        
-
-
 
         /**
          * Sets up selectize for the current branch
@@ -236,6 +188,14 @@
             }
         };
 
+        self.requestStatus = function(){
+            branches.send({
+                "type" : "request-server-status",
+                "server" : self.serverSlug
+            });
+        }
+
+
         /** Gets a status update from the server that tells us the active branch 
             and the available branches
          */
@@ -267,28 +227,14 @@
         };
 
         self.initialize = function(){
-            self.getStatus();
+            console.log("Initializing server");
+            self.requestStatus();
         };
 
     };
 
+    branches.servers = {
+        "Server" : Server
+    };
 
-    $(document).ready(function(){
-        $(".server").each(function(){
-            var serverId = this.id.replace("server-", "");
-            var serverViewModel = new ServerViewModel();
-            ko.applyBindings(serverViewModel, this);
-            serverViewModel.initialize();
-        });
-
-        // Gather a list of project id's covered on the page
-        // if($(".commit-list")){
-        //  $("div.project").each(function(){
-        //      var projectId = this.id.replace("project-", "");
-        //      var serverViewModel = new ServerViewModel(projectId);
-        //      ko.applyBindings(serverViewModel, this);
-        //      serverViewModel.initialize();
-        //  });
-        // }
-    });
 })();
