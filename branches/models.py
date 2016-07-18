@@ -119,7 +119,9 @@ class Project(OwnerMixin, TimeStampedModel):
 
     def get_absolute_url(self):
         return reverse(
-            "branches:project-detail", kwargs=dict(owner=self.owner))
+            "branches:project-detail", kwargs=dict(
+                owner=self.owner.username,
+                project=self.slug))
 
 
 class Script(OwnerMixin, TimeStampedModel):
@@ -286,17 +288,20 @@ class Server(OwnerMixin, TimeStampedModel):
         """ Return about whether we're changing branches, whether a branch
             change has been requested and some other details.
         """
-        with self.connect():
-            def get_status():
-                with cd(self.location):
-                    return self.repo.get_status(limit=limit)
-            result = execute(get_status)
-            result = result.get(self.address)
-            result["log"] = self.get_log(limit=limit)
-            result["is_script_running"] = self.is_script_running
-            result["requests_exists"] = self.requests_exists
-            return result
-        return None
+        result = cache.get(self.cache_key, None)
+        if not result:
+            with self.connect():
+                def get_status():
+                    with cd(self.location):
+                        return self.repo.get_status(limit=limit)
+                result = execute(get_status)
+                result = result.get(self.address)
+                result["log"] = self.get_log(limit=limit)
+                result["is_script_running"] = self.is_script_running
+                result["requests_exists"] = self.requests_exists
+                cache.set(self.cache_key, result, timeout=self.cache_timeout)
+                return result
+        return result
 
     def request_branch_change(self, branch):
         """ Request a branch change
