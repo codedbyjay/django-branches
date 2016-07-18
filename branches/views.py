@@ -94,6 +94,32 @@ class ServerUpdateView(UpdateView):
     model = Server
     form_class = NewServerForm
     template_name = "branches/server_form.html"
+    slug_field = "slug"
+    slug_url_kwarg = "server"
+
+    def get_form_kwargs(self):
+        kwargs = super(ServerUpdateView, self).get_form_kwargs()
+        kwargs["user"] = self.request.user
+        return kwargs
+
+    def form_valid(self, form):
+        cleaned_data = form.cleaned_data
+        project = cleaned_data.pop("project")
+        owner = cleaned_data.pop("owner")
+        location = cleaned_data.pop("location")
+        server = form.save(commit=False)
+        server.project = project
+        server.owner = owner
+        server.save()
+        if not server.repository:
+            server.repository = Repository.objects.create(location=location)
+            server.save()
+        else:
+            repository = server.repository
+            repository.location = location
+            repository.save()
+        self.object = server
+        return redirect(self.get_success_url())
 
 class ServerDeleteView(DeleteView):
     model = Server
