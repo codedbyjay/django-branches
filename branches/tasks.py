@@ -1,5 +1,9 @@
+import json
+
 from fabric.api import env, run, execute, cd
 from fabric.contrib.files import append
+
+from channels import Group
 
 from .networking import setup_fabric_environment, test_credentials
 from .system import get_ssh_key
@@ -36,3 +40,12 @@ def change_server_branch(self, server_pk, branch, request):
         branch, self.request.id, request)
 
 
+@app.task(bind=True)
+def get_server_status(self, server_pk):
+    from branches.models import Server
+    server = Server.objects.get(pk=server_pk)
+    status = server.get_status()
+    print("Sending message to group")
+    Group("server-%s" % server_pk).send({
+        'text' : json.dumps(status)
+    })
