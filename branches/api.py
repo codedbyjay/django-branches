@@ -31,6 +31,10 @@ class ServerResource(ModelResource):
             url(r"^(?P<resource_name>%s)/(?P<pk>\d+)/change-branch-log/$" % self._meta.resource_name, self.wrap_view('log'), name="get-change-branch-log"),
         ]
 
+    def dehydrate(self, bundle):
+        bundle.data["busy"] = bundle.obj.busy
+        return bundle
+
     def get_current_branch(self, request, **kwargs):
         pk = kwargs.get("pk")
         server = get_object_or_404(Server, pk=pk)
