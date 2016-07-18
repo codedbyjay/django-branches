@@ -4,14 +4,14 @@ from django.contrib import admin
 from django.conf.urls.static import static
 
 from django_branches.views import (
-    LoginView, LogoutView, HomeView, RegistrationView
+    LoginView, LogoutView, HomeView, RegistrationView,
 )
 
 
 urlpatterns = patterns(
     '',
     # Examples:
-    url(r'^$', HomeView.as_view(), name='dashboard'),
+    url(r'^$', HomeView.as_view(), name='home'),
     url(r'^login/$', LoginView.as_view(), name='login'),
     url(r'^logout/$', LogoutView.as_view(), name='logout'),
     url(r'^accounts/register/$', RegistrationView.as_view(), name='register'),
