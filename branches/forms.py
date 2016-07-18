@@ -68,6 +68,7 @@ class NewServerForm(ModelForm):
         result = super(NewServerForm, self).__init__(*args, **kwargs)
         instance = kwargs.get("instance", None)
         self.fields["owner"] = get_owner_form_field(self.user)
+        self.fields["location"] = forms.CharField()
         self.helper = FormHelper()
         self.helper.layout = Layout(
             Div(
@@ -79,6 +80,7 @@ class NewServerForm(ModelForm):
                 'project',
                 'name',
                 'address',
+                'location',
                 'description',
                 'port',
                 FormActions(
