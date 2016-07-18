@@ -56,7 +56,7 @@ INSTALLED_APPS = (
     'tastypie',
     'crispy_forms',
     'debug_toolbar',
-
+    'channels',
     'docs',
     'django_gravatar',
 
@@ -112,24 +112,15 @@ STATIC_URL = '/static/'
 CRISPY_TEMPLATE_PACK = 'bootstrap3'
 
 CACHES = {
-    'default': {
-        'BACKEND': 'redis_cache.RedisCache',
-        'LOCATION': [
-            'redis'
-        ],
-        'OPTIONS': {
-            'DB': 2,
-            'PARSER_CLASS': 'redis.connection.HiredisParser',
-            'CONNECTION_POOL_CLASS': 'redis.BlockingConnectionPool',
-            'CONNECTION_POOL_CLASS_KWARGS': {
-                'max_connections': 50,
-                'timeout': 20,
-            },
-            'MAX_CONNECTIONS': 1000,
-            'PICKLE_VERSION': -1,
-        },
-    },
+    "default": {
+        "BACKEND": "django_redis.cache.RedisCache",
+        "LOCATION": "redis://redis:6379/1",
+        "OPTIONS": {
+            "CLIENT_CLASS": "django_redis.client.DefaultClient",
+        }
+    }
 }
+
 
 DEBUG_TOOLBAR_PATCH_SETTINGS = False
 
@@ -137,7 +128,7 @@ DEBUG_TOOLBAR_PATCH_SETTINGS = False
 BROKER_URL = 'redis://redis'
 CELERY_RESULT_BACKEND = 'redis://redis'
 
-INTERNAL_IPS = ["192.168.0.2"]
+INTERNAL_IPS = ["192.168.0.2", "localhost", "127.0.0.1", "172.19.0.1"]
 
 TASTYPIE_DEFAULT_FORMATS = ['json']
 
@@ -148,6 +139,15 @@ ACCOUNT_ACTIVATION_DAYS = 14
 EMAIL_BACKEND = 'django_mailgun.MailgunBackend'
 DEFAULT_FROM_EMAIL = 'admin@devbranch.io'
 SERVER_EMAIL = 'admin@devbranch.io'
+
+DOCS_ROOT = os.path.join(BASE_DIR, 'docs/_build/html')
+
+CHANNEL_LAYERS = {
+    "default": {
+        "BACKEND": "asgiref.inmemory.ChannelLayer",
+        "ROUTING": "branches.routing.channel_routing",
+    }
+}
 
 try:
     from branches.local_settings import *
