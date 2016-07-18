@@ -124,6 +124,14 @@ class ServerUpdateView(UpdateView):
 class ServerDeleteView(DeleteView):
     model = Server
     template_name = "branches/server_delete.html"
+    slug_field = "slug"
+    slug_url_kwarg = "server"
+
+    def get_form_kwargs(self):
+        kwargs = super(ServerDeleteView, self).get_form_kwargs()
+        kwargs["user"] = self.request.user
+        return kwargs
+
 
     def get_success_url(self):
         return reverse("branches:server-list")
@@ -133,6 +141,8 @@ class InitializeServerView(FormView, SingleObjectMixin):
     model = Server
     form_class = InitializeServerForm
     template_name = "branches/initialize_server.html"
+    slug_field = "slug"
+    slug_url_kwarg = "server"
 
     def __init__(self, *args, **kwargs):
         self.object = None
@@ -161,22 +171,31 @@ class InitializeServerView(FormView, SingleObjectMixin):
         username = form.cleaned_data.get("username")
         password = form.cleaned_data.get("password")
         server.initialize(username, password)
-        return redirect("branches:server-initializing", pk=server.pk)
+        return redirect(
+            "branches:server-initializing",
+            owner=server.owner.username,
+            project=server.project.slug,
+            server=server.slug)
+
 
 class ServerInitiailizingView(DetailView):
     model = Server
     template_name = "branches/initializing_server.html"
+    slug_field = "slug"
+    slug_url_kwarg = "server"
 
     def get(self, *args, **kwargs):
         server = self.get_object()
         if server.initialized:
-            return redirect("branches:server-detail", pk=server.pk)
+            return redirect(server.get_absolute_url())
         return super(ServerInitiailizingView, self).get(*args, **kwargs)
 
 class ServerDetailView(DetailView):
 
     model = Server
     context_object_name = "server"
+    slug_field = "slug"
+    slug_url_kwarg = "server"
 
 class ServerLogView(DetailView):
 
@@ -200,7 +219,7 @@ class ProjectDetailView(DetailView):
     model = Project
     context_object_name = "project"
     slug_field = "slug"
-    slug_url_kwarg = "project_slug"
+    slug_url_kwarg = "project"
 
 class ProjectUpdateView(UpdateView):
     model = Project
@@ -219,7 +238,8 @@ class NewProjectView(CreateView):
     form_class = NewProjectForm
 
     def get_success_url(self):
-        return self.get_object().get_absolute_url()
+        url = self.get_object().get_absolute_url()
+        return url
 
     def get_form_kwargs(self):
         kwargs = super(NewProjectView, self).get_form_kwargs()
