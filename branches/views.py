@@ -49,8 +49,46 @@ class NewServerView(CreateView):
     form_class = NewServerForm
 
     def get_success_url(self):
-        pk = self.object.pk
-        return reverse("branches:initialize-server", kwargs=dict(pk=pk))
+        server = self.object
+        project = server.project
+        owner = project.owner.username
+        return reverse(
+            "branches:initialize-server", 
+            kwargs=dict(
+                server=server.slug, 
+                project=project.slug,
+                owner=owner))
+
+    def get_form_kwargs(self):
+        kwargs = super(NewServerView, self).get_form_kwargs()
+        kwargs["user"] = self.request.user
+        return kwargs
+
+    def form_invalid(self, form):
+        print("Errors in form")
+        print(form.errors)
+        return super(NewServerView, self).form_invalid(form)
+
+    def form_valid(self, form):
+        print("Processing form...")
+        cleaned_data = form.cleaned_data
+        project = cleaned_data.pop("project")
+        owner = cleaned_data.pop("owner")
+        location = cleaned_data.pop("location")
+        server = form.save(commit=False)
+        server.project = project
+        server.owner = owner
+        server.save()
+        if not server.repository:
+            server.repository = Repository.objects.create(location=location)
+            server.save()
+        else:
+            repository = server.repository
+            repository.location = location
+            repository.save()
+        self.object = server
+        return redirect(self.get_success_url())
+
 
 class ServerUpdateView(UpdateView):
     model = Server
