@@ -47,7 +47,7 @@ class LoginView(FormView):
 
     def get(self, *args, **kwargs):
         if self.request.user.is_authenticated():
-            return redirect("dashboard", username=self.request.user.username)
+            return redirect("home")
         return super(LoginView, self).get(*args, **kwargs)
 
     def form_valid(self, form):
@@ -57,9 +57,8 @@ class LoginView(FormView):
         user = authenticate(username=username, password=password)
         if user is not None:
             login(self.request, user)
-            return redirect("dashboard", username=self.request.user.username)
+            return redirect("home")
         else:
-            print("Invalid user")
             form.add_error(None, "Invalid email or password")
         context = self.get_context_data()
         context["form"] = form
