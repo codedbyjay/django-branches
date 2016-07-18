@@ -8,6 +8,7 @@ from django.db.models.signals import pre_save
 from django.contrib.auth import get_user_model
 from django.contrib.contenttypes.fields import GenericForeignKey
 from django.contrib.contenttypes.models import ContentType
+from django.core.cache import cache
 
 from fabric.api import env, run, execute, cd, local, sudo
 from fabric.contrib.files import append
@@ -24,6 +25,7 @@ from branches.tasks import *
 from branches.networking import *
 from branches.git import Repo
 from branches.celery import get_new_task_id
+
 
 class OwnerMixin(object):
 
@@ -155,6 +157,7 @@ class Repository(TimeStampedModel):
     def __unicode__(self):
         return self.name
 
+
 class Server(OwnerMixin, TimeStampedModel):
     """ Servers have GIT projects on them that users want to change branches
         for. 
@@ -179,6 +182,15 @@ class Server(OwnerMixin, TimeStampedModel):
 
     def __unicode__(self):
         return self.name
+
+    @property
+    def cache_key(self):
+        return "server-%s" % self.pk
+
+    @property
+    def cache_timeout(self):
+        return 30
+    
 
     def connect(self):
         """ A context manager that allows connection to the server
@@ -231,6 +243,10 @@ class Server(OwnerMixin, TimeStampedModel):
         """ Tells us if we are changing the branches for this project
         """
         return self.executions.filter(active=True).exists()
+
+    @property
+    def busy(self):
+        return self.is_script_running or self.requests_exists
 
     @property
     def requests_exists(self):
